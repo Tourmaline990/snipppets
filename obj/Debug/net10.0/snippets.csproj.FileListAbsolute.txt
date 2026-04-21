@@ -1,0 +1,14 @@
+C:\Users\HP\OneDrive\Documents\snippets\bin\Debug\net10.0\snippets.exe
+C:\Users\HP\OneDrive\Documents\snippets\bin\Debug\net10.0\snippets.deps.json
+C:\Users\HP\OneDrive\Documents\snippets\bin\Debug\net10.0\snippets.runtimeconfig.json
+C:\Users\HP\OneDrive\Documents\snippets\bin\Debug\net10.0\snippets.dll
+C:\Users\HP\OneDrive\Documents\snippets\bin\Debug\net10.0\snippets.pdb
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.AssemblyInfoInputs.cache
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.AssemblyInfo.cs
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.csproj.CoreCompileInputs.cache
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.dll
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\refint\snippets.dll
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.pdb
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\snippets.genruntimeconfig.cache
+C:\Users\HP\OneDrive\Documents\snippets\obj\Debug\net10.0\ref\snippets.dll
