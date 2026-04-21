@@ -32,7 +32,7 @@ class Employee:
        
     
   def Employeedetails(self):
-    print(f"Employee Informations \n Name: {self.name}\n Age: {self.age} \nIncome: ${self.income:.2f}")
+    return f"Employee Informations: Name: {self.name} Age: {self.age} Income: ${self.income:.2f}"
 
 
 Employee1 = Employee("Aliya",18,1000.00)
