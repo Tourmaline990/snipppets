@@ -1,0 +1,15 @@
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\bin\Debug\net10.0\payment_processor.exe
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\bin\Debug\net10.0\payment_processor.deps.json
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\bin\Debug\net10.0\payment_processor.runtimeconfig.json
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\bin\Debug\net10.0\payment_processor.dll
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\bin\Debug\net10.0\payment_processor.pdb
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.AssemblyInfoInputs.cache
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.AssemblyInfo.cs
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.csproj.CoreCompileInputs.cache
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.sourcelink.json
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.dll
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\refint\payment_processor.dll
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.pdb
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\payment_processor.genruntimeconfig.cache
+C:\Users\HP\OneDrive\Documents\snippets\payment_processor\obj\Debug\net10.0\ref\payment_processor.dll
