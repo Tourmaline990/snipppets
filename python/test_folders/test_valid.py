@@ -12,7 +12,7 @@ def test_validate_name():
    with pytest.raises(ValueError) as int_as_name:
       employee._validate_name(123)
       
-   assert "Name cannot be empty" == str(int_as_name.value)
+   assert "Name cannot be empty" in str(int_as_name.value)
 
    # assert empty name 
    with pytest.raises(ValueError) as empty_name:

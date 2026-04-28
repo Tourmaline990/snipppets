@@ -1,0 +1,64 @@
+{
+    "products": {
+        "P001": {
+            "name": "laptop",
+            "id": "A112",
+            "price": 130,
+            "stock": 8
+        },
+        "P002": {
+            "name": "smartglasses",
+            "id": "A113",
+            "price": 239,
+            "stock": 14
+        },
+        "P003": {
+            "name": "phone",
+            "id": "A114",
+            "price": 108,
+            "stock": 23
+        }
+    },
+    "Users": {
+        "aliyarredud": {
+            "name": "aliya",
+            "email": "agbetoba@gmail.com",
+            "orders": [
+                {
+                    "user_id": "aliyarredud",
+                    "order_id": "orderbcru",
+                    "total": 499,
+                    "items": [
+                        {
+                            "product_id": "P001",
+                            "quantity": 2
+                        },
+                        {
+                            "product_id": "P002",
+                            "quantity": 1
+                        }
+                    ],
+                    "date": "2026-04-28 17:39:37"
+                }
+            ]
+        }
+    },
+    "Orders": [
+        {
+            "user_id": "aliyarredud",
+            "order_id": "orderbcru",
+            "total": 499,
+            "items": [
+                {
+                    "product_id": "P001",
+                    "quantity": 2
+                },
+                {
+                    "product_id": "P002",
+                    "quantity": 1
+                }
+            ],
+            "date": "2026-04-28 17:39:37"
+        }
+    ]
+}
