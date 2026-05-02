@@ -4,13 +4,13 @@
             "name": "laptop",
             "id": "A112",
             "price": 130,
-            "stock": 4
+            "stock": 5
         },
         "P002": {
             "name": "smartglasses",
             "id": "A113",
             "price": 239,
-            "stock": 8
+            "stock": 9
         },
         "P003": {
             "name": "phone",
@@ -23,40 +23,7 @@
         "aliyarredud": {
             "name": "aliya",
             "email": "agbetoba@gmail.com",
-            "orders": [
-                {
-                    "user_id": "aliyarredud",
-                    "order_id": "orderbcru",
-                    "total": 499,
-                    "items": [
-                        {
-                            "product_id": "P001",
-                            "quantity": 2
-                        },
-                        {
-                            "product_id": "P002",
-                            "quantity": 1
-                        }
-                    ],
-                    "date": "2026-04-28 17:39:37"
-                },
-                {
-                    "user_id": "aliyarredud",
-                    "order_id": "ordercx165",
-                    "total": 1824,
-                    "items": [
-                        {
-                            "product_id": "P001",
-                            "quantity": 3
-                        },
-                        {
-                            "product_id": "P002",
-                            "quantity": 6
-                        }
-                    ],
-                    "date": "2026-05-01 12:28:30"
-                }
-            ]
+            "orders": []
         },
         "raymondredv65a": {
             "name": "raymond",
@@ -75,41 +42,47 @@
                     "date": "2026-05-01 17:46:39"
                 }
             ]
+        },
+        "empress04zng": {
+            "name": "empress",
+            "email": "empress@zeeworld.com",
+            "orders": [
+                {
+                    "user_id": "empress04zng",
+                    "order_id": "orderlz3ed",
+                    "total": 1107,
+                    "items": [
+                        {
+                            "product_id": "P001",
+                            "quantity": 3
+                        },
+                        {
+                            "product_id": "P002",
+                            "quantity": 3
+                        }
+                    ],
+                    "date": "2026-05-02 13:26:56"
+                },
+                {
+                    "user_id": "empress04zng",
+                    "order_id": "orderf1d4",
+                    "total": 847,
+                    "items": [
+                        {
+                            "product_id": "P001",
+                            "quantity": 1
+                        },
+                        {
+                            "product_id": "P002",
+                            "quantity": 3
+                        }
+                    ],
+                    "date": "2026-05-02 16:02:59"
+                }
+            ]
         }
     },
     "Orders": [
-        {
-            "user_id": "aliyarredud",
-            "order_id": "orderbcru",
-            "total": 499,
-            "items": [
-                {
-                    "product_id": "P001",
-                    "quantity": 2
-                },
-                {
-                    "product_id": "P002",
-                    "quantity": 1
-                }
-            ],
-            "date": "2026-04-28 17:39:37"
-        },
-        {
-            "user_id": "aliyarredud",
-            "order_id": "ordercx165",
-            "total": 1824,
-            "items": [
-                {
-                    "product_id": "P001",
-                    "quantity": 3
-                },
-                {
-                    "product_id": "P002",
-                    "quantity": 6
-                }
-            ],
-            "date": "2026-05-01 12:28:30"
-        },
         {
             "user_id": "raymondredv65a",
             "order_id": "orderc3ma",
@@ -141,6 +114,38 @@
                 }
             ],
             "date": "2026-05-01 17:46:39"
+        },
+        {
+            "user_id": "empress04zng",
+            "order_id": "orderlz3ed",
+            "total": 1107,
+            "items": [
+                {
+                    "product_id": "P001",
+                    "quantity": 3
+                },
+                {
+                    "product_id": "P002",
+                    "quantity": 3
+                }
+            ],
+            "date": "2026-05-02 13:26:56"
+        },
+        {
+            "user_id": "empress04zng",
+            "order_id": "orderf1d4",
+            "total": 847,
+            "items": [
+                {
+                    "product_id": "P001",
+                    "quantity": 1
+                },
+                {
+                    "product_id": "P002",
+                    "quantity": 3
+                }
+            ],
+            "date": "2026-05-02 16:02:59"
         }
     ]
 }

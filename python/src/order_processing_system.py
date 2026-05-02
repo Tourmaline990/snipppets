@@ -5,34 +5,84 @@ import os
 import json
    
 def main():   
-        storage = []
-        system = {
-          "products": {},
-           "Users": {},
-            "Orders": []
-        }
+    storage = []
+    system = {
+    "products": {},
+    "Users": {},
+    "Orders": []
+     }
 
-        system["products"]["P001"] = {"name": "laptop", "id" : "A112","price": 130,"stock": 10}
-        system["products"]["P002"] = {"name": "smartglasses","id":"A113","price": 239, "stock": 15}
-        system["products"]["P003"] = {"name": "phone","id":"A114","price":108,"stock": 23}
-
+    system["products"]["P001"] = {"name": "laptop", "id" : "A112","price": 130,"stock": 10}
+    system["products"]["P002"] = {"name": "smartglasses","id":"A113","price": 239, "stock": 15}
+    system["products"]["P003"] = {"name": "phone","id":"A114","price":108,"stock": 23}
+    try:
+        
+        
         try: 
-           system = load_data("company",system)
-           choice = None
-           while choice != 7:
-              Display_Menu()
-              choice = int(input("Select an action: "))             
-              if choice == 1:
+          system = load_data("company",system)
+        except FileNotFoundError as f:
+            print(f"Error! {f}")
+        status = None
+        print("Existing users should 'login' to continue transactions.")
+        print("New users are advised to 'sign up' for better experience.")
+        print("Enter 'login' OR 'signup' ")
+        current_user = ""
+        try:
+           status = input(">>>  ").lower()
+        except ValueError as v:
+           print(f"Error! {v}")
+        while status != "login" and status != "signup":
+           print("Login or Signup")
+           status = input(">>>  ").lower()
+        if status == "login":
+            while current_user.strip() == "" or not(isinstance(current_user,str)):
+               current_user = input("Enter your user_id to proceed: ")
+            try:
+              if validate_user_id(current_user,system["Users"]):
+                print()
+                print(f"Welcome back {system["Users"][current_user]["name"].capitalize()}")
+                print()
+            except ValueError as va:
+               print(f"Error! {va}")
+        elif status == "signup":
+            regex_pattern = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,}$'
+            print()
+            try:
+                name = input("Enter a preffered username:  ")
+                email = input("Enter a valid email address: ")
+                while not (isinstance(email,str) and re.match(regex_pattern,email)):
+                        print("Please enter a valid email address.")
+                        email = input("Enter a valid email address: ")
+                while not(name.strip() != "" and name != None):
+                        print("Name cannot be empty")
+                        name = input("Enter a preffered username:  ")
+                user_id = Register_User(name,email,system["Users"])
+                print(f"Authorize your transactions with your USER ID '{user_id}'")
+                file_persistence("company",system)
+                current_user = user_id   
+            except ValueError as e:
+              print(f"Error! {e}")  
+        choice = None
+        while choice != 6:
+            Display_Menu()
+            try:
+               choice = int(input("Select an action: ")) 
+            except ValueError as e:
+               print(f"Error! {e}")               
+            if choice == 1:
                 print()
                 Display_Products(system["products"])
-              elif choice == 2:
+            elif choice == 2:
                 action = None
                 while  action !=  4:
                   print()
                   cart_actions()
                   print()
                   print("Select an action or enter 4 to quit")
-                  action = int(input(">>> "))
+                  try:
+                    action = int(input(">>> "))
+                  except ValueError as e:
+                     print(f"Error! {e}")   
                   if action == 1:
                       end = ''
                       while end != "done":
@@ -47,89 +97,92 @@ def main():
                             product_quantity = int(input("Enter a lesser quantity: "))
                           add_to_cart(storage,product_id,product_quantity)
                           end = input("Enter 'done' to leave cart OR click enter to continue: ").lower()
+                      storage = merge_same_products(storage)
                   elif action == 2:
+                    try:
                      display_cart_items(storage,system)
+                    except IndexError as ind:
+                       print(f"Error! {ind}")
                   elif action == 3:
                       remove_index = None
                       while remove_index == None and not(isinstance(remove_index,int)):
                           remove_index = int(input("Enter the number you will like to delete:  "))
-                      delete_cart_item(storage,remove_index)
-                           
-              elif choice == 3:
-                regex_pattern = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,}$'
-                print()
-                name = input("Enter a preffered username:  ")
-                email = input("Enter a valid email address: ")
-                while not (isinstance(email,str) and re.match(regex_pattern,email)):
-                        print("Please enter a valid email address.")
-                        email = input("Enter a valid email address: ")
-                while not(name.strip() != "" and name != None):
-                        print("Name cannot be empty")
-                        name = input("Enter a preffered username:  ")
-                user_id = Register_User(name,email,system["Users"])
-                print(f"Authorize your transactions with your USER ID '{user_id}'")
-                file_persistence("company",system)
-              elif choice == 4: 
-                  user_id = ""
-                  while user_id.strip() == "" or not(isinstance(user_id,str)):
-                     user_id = input("Enter your user_id to proceed: ")
-                  if validate_user_id(user_id,system["Users"]):
-                     checkout(storage,system,user_id)
-              elif choice == 5:
-                  user_id = input("Enter your user_id to proceed: ")
-                  while user_id.strip() == "" or not(isinstance(user_id,str)):
-                      user_id = input("Enter your user_id to proceed: ")
-                  if validate_user_id(user_id,system["Users"]):
+                      try:
+                        delete_cart_item(storage,remove_index)
+                      except IndexError as I:
+                        print(f"Error! {I}")                           
+            elif choice == 3: 
+                try:
+                  checkout(storage,system,current_user)
+                except IndexError as inder:
+                   print(f"Error! {inder}")
+                   
+            elif choice == 4:
+                try:
                     print("Enter 1 to view all orders OR click 2 to filter by ORDER_ID")
                     viewing_type = None
                     while viewing_type != 1 and viewing_type != 2:
                       viewing_type = int(input(">>> "))
                     if viewing_type == 1:
-                      view_orders(system,user_id)
+                     try:
+                       view_orders(system,current_user)
+                     except IndexError as inderr:
+                         print(f"Error! {inderr}")
                     else:
-                      id = ""
-                      while id.strip() == "" or not(isinstance(id,str) ):
-                        id = input("Enter Order Id: ")
-                      view_orders(system,user_id,id)
-              elif choice == 6:
+                      order_id = ""
+                      while order_id.strip() == "" or not(isinstance(order_id,str) ):
+                        order_id = input("Enter Order Id: ")
+                      try:
+                        view_orders(system,current_user,id)
+                      except IndexError as err:
+                         print(f"Error! {err}")
+                except ValueError as e:
+                  print(f"Error! {e}") 
+            elif choice == 5:
+                try:
                   print("Proceed with caution")
                   print("Do you want to proceed with order cancellation? (yes/no)")
                   proceed = input(">>>  ").lower()
                   if proceed == "yes":
-                    user_id = input("Enter your user_id to proceed: ")
-                    while user_id.strip() == "" or not(isinstance(user_id,str)):
-                        user_id = input("Enter your user_id to proceed: ")
                     order_id = input("Enter your order_id to proceed with cancellation: ")
                     while order_id.strip() == "" or not(isinstance(order_id,str)):
                         order_id = input("Enter your user_id to proceed: ")
-                    cancel_checkout(user_id,order_id,system)
+                    cancel_checkout(current_user,order_id,system)
                     file_persistence("company",system)
                   else:
                       print("Cancellation Invalidated.")
-        except ValueError as e:
-            print(f"Error! {e}")   
-        except FileNotFoundError as f:
-            print(f"Error! {f}")
-        except IndexError as I:
-            print(f"Error! {I}")
-        except KeyError as k:
-            print(f"Error! {k}")
-        except TypeError as t:
-            print(f"Error! {t}")
-        except Exception as ex:
-             print(f"Error! {ex}")
+                except ValueError as e:
+                 print(f"Error! {e}") 
+        
+    except Exception as ex:
+        print(f"Error! {ex}")
 
 
 def cancel_checkout(user_id,order_id,system):
  if validate_user_id(user_id,system["Users"]):
      print("Analyzing user status...")
-     seen = None
-     for i in system["Users"][user_id]["orders"]:
-          if order_id == i["order_id"]: 
-             seen = i  
-             print("User request in progress...") 
-             system["Users"][user_id]["orders"].remove(seen)
-     print("Order Cancelled")         
+     order =  find_order_id(system,order_id,user_id)
+     if order:
+        print("User request in progress...")
+        for i in order["items"]:
+           product_id = i["product_id"]
+           qty = i["quantity"]
+           available_stock = system["products"][product_id]["stock"]
+           recomputed = available_stock + qty
+           system["products"][product_id]["stock"] = recomputed
+
+        system["Users"][user_id]["orders"].remove(order)
+        system["Orders"].remove(order)
+        print("Order Cancelled")
+       
+def find_order_id(system,order_id,user_id):
+    seen = None
+    for i in system["Users"][user_id]["orders"]:
+        if order_id == i["order_id"]:
+            seen = i 
+        return seen
+    raise IndexError("Order Id not found")
+
 def validate_product_id(id,system):
    if id not in system["products"]:
        return False
@@ -137,26 +190,32 @@ def validate_product_id(id,system):
 
 def display_cart_items(storage,system):
     if storage:
-     store = merge_same_products(storage)
+     store = [item.copy() for item in storage]
      count = 0
+     total = 0
      for i in store:
        count += 1
        p_id = i["product_id"]
        p_name = system["products"][p_id]["name"]
-       print(f"{count}. {i["product_id"]} >> {p_name} - {i["quantity"]}")
+       price = system["products"][p_id]["price"]
+       print(f"{count}. {p_id} >> {p_name} - {i["quantity"]}")
+       total += i["quantity"] * price
+       print()
+     print(f"Total: ${total:.2f}")
     else:
         raise IndexError("Cart is Empty")
     
 def delete_cart_item(storage,index):
     product_index = index - 1
     if len(storage) > product_index:
-     storage.pop(product_index)
-     print("........")
-     print("item removed.")
+      storage.pop(product_index)
+      print("........")
+      print("item removed.")
     else:
         raise IndexError("Number entered is greater than items in cart")
+    
 def Display_Menu():
-    menu = ["View Products","Cart","Register user","Place Order","View Orders","Cancel Checkout","Exit"]
+    menu = ["View Products","Cart","Place Order","View Orders","Cancel Checkout","Exit"]
     for i in range(len(menu)):
         m = menu[i]
         print(f"{i + 1}.  {m}")
@@ -165,6 +224,8 @@ def Display_Products(product_dict):
     for key, value in product_dict.items():
         print(f"{key} >> {value["name"]} | Cost: ${value["price"]:.2f} | Items left: {value["stock"]} ")
         print()
+
+
         
 def cart_actions():
     actions = ["Add to Cart","View Cart","Remove item from cart","Quit"]
@@ -183,7 +244,7 @@ def Register_User(name,email,dict):
 
 
 def Generate_id(recepient):
-    id_s = ["a","b","c","d","e","f","1","2","3","4","65","z","12","g","k","t","c","w","l","0","m","x","v","r","h","i","u","red","res"]
+    id_s = ["a","b","c","d","e","f","1","2","3","4","65","z","12","g","k","t","c","w","l","0","m","x","v","r","h","i","u","ed","es","ng"]
     constituent = random.sample(id_s,k=4)
     for i in constituent:
         recepient += i
@@ -239,27 +300,20 @@ def add_to_cart(storage,id,quantity):
     storage.append(cart)
 
 def merge_same_products(storage):
- storage_copy = [i.copy()  for i in storage ]
- occurence = []
- all_keys = [i["product_id"] for i in storage_copy]
- for p_ids in all_keys:
-    total_product_quantity = 0
-    for index in range(len(all_keys)):
-         if all_keys[index] == p_ids:
-             occurence.append(index)
-    if len(occurence) > 1:
-       for i in occurence:
-        quantity = storage_copy[i]["quantity"]
-        total_product_quantity += quantity
-       first_location = occurence[0]
-       product = storage_copy[first_location]
-       product["quantity"] = total_product_quantity
-       for i in occurence:
-           if i != first_location:
-               storage_copy.pop(i)
-               all_keys.pop(i)  
-    occurence.clear()
- return storage_copy
+ merged = {}
+ for item in storage:
+    p_id  = item["product_id"]
+    qty = item["quantity"]
+    
+    if p_id in merged:
+       merged[p_id]["quantity"] += qty
+    else:
+       merged[p_id] = item.copy()
+
+
+ storage = list(merged.values())
+ return storage
+
       
 
 def present_time():
@@ -295,20 +349,14 @@ def checkout(storage,system,user_id):
         file_persistence("company",system)
         storage.clear() 
     else:
-       raise ValueError("Cart id Empty")
+       raise IndexError("Cart is Empty")
     
 
 def view_orders(system,user_id,order_id=None):
     if order_id != None:
-      seen = None
-      for i in system["Users"][user_id]["orders"]:
-          if order_id == i["order_id"]: 
-             seen = i 
-             break
-      if seen:
-            Display_Order_Details(seen,system)
-      else: 
-             raise ValueError("Order_Id not found")
+      order = find_order_id(system,order_id,user_id)
+      if order:
+            Display_Order_Details(order,system)
     else:
       for i in system["Users"][user_id]["orders"]:
           Display_Order_Details(i,system)
