@@ -2,9 +2,11 @@ import random
 import datetime
 import copy
 
+
 class Order:
+    
     def __init__(self,items,order_id = None,date = None,total = None):
-        self.items = self.get_cart(items)
+        self.items = copy.deepcopy(items)
         self.order_id = order_id if order_id is not None else self.generate_order_id()
         self.date = date if date is not None else self.present_time()
         self.total = total if total is not None else self.calculate_total()
@@ -25,25 +27,12 @@ class Order:
       formatted = present_date.strftime("%Y-%m-%d %H:%M:%S")
       return formatted
 
-    def get_cart(self,cart):
-        cart = copy.deepcopy(cart)
-        if not cart:
-          raise ValueError("Cart is Empty")
-        return cart 
     
     def calculate_total(self):
-       total = 0
-       for product, qty in self.items:
-            total += product.get_product_price() * qty
-       return total
-    
-    def checkout(self):
-        for product, qty in self.items:
-           if qty > product.get_stock_quantity():
-              raise ValueError("Insufficient stock.")
-        for product, qty in self.items:
-           product.reduce_stock_quantity(qty)
-        print("Order Created Successfully.")
+     sum = 0
+     for product,qty in self.items:
+        sum += product.get_product_price() * qty
+     return sum
     
     def display(self):
        print()
@@ -61,7 +50,7 @@ class Order:
     def to_json_dict(self):
        return{
           "order_id": self.order_id,
-          "items": [[product.to_json_dict(),qty] for product,qty in self.items],
+          "items": [[product.get_product_id(),qty] for product,qty in self.items],
           "date": self.date,
           "total": self.total
        }

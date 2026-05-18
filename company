@@ -32,37 +32,27 @@
         }
     },
     "Users": {
-        "aliya1zcr": {
-            "name": "aliya",
-            "email": "agbetoba@gmail.com",
+        "rainbow65i42": {
+            "name": "rainbow",
+            "email": "sunshine@gmail.com",
             "orders": [
                 {
-                    "order_id": "ordermzesl",
+                    "order_id": "orderxmesg",
                     "items": [
                         [
-                            {
-                                "name": "Tablets",
-                                "id": "p004",
-                                "price": 250,
-                                "stock": 37
-                            },
+                            "p004",
                             3
                         ],
                         [
-                            {
-                                "name": "SmartWatch",
-                                "id": "p005",
-                                "price": 350,
-                                "stock": 88
-                            },
-                            2
+                            "p005",
+                            6
                         ]
                     ],
-                    "date": "2026-05-17 15:51:17",
-                    "total": 1450
+                    "date": "2026-05-18 13:01:19",
+                    "total": 2850
                 }
             ],
-            "user_id": "aliya1zcr",
+            "user_id": "rainbow65i42",
             "cart": []
         }
     }

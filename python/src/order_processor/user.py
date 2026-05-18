@@ -1,6 +1,6 @@
 import random
-from order import Order
 from products import Product
+
 
 class User:
     def __init__(self,name,email,orders=None,cart=None,user_id=None):
@@ -36,7 +36,10 @@ class User:
          print("Item Removed.") 
          return
       raise IndexError("Invalid Index")
-
+    
+    def checkout(self,system):
+        return system.place_order(self)
+    
     def view_cart(self):
        if not self.cart:
           raise ValueError("Cart Is Empty.")
@@ -46,15 +49,7 @@ class User:
           print(f"{num} {product.get_product_id()} -- {product.get_product_name()}  X {qty} ")
           total += product.get_product_price() * qty
           num += 1
-       print(f"Total: ${total:.2f}")
-   
-    def checkout(self):
-       print("Transaction in progress....")
-       order = Order(self.cart)
-       order.checkout()
-       self.orders.append(order)
-       self.cart.clear()
-       return order.get_order_id()
+       print(f"Total: ${total:.2f}")   
 
     def view_all_orders(self):
        if not self.orders:
@@ -63,7 +58,7 @@ class User:
           order.display()
 
     def search_order(self,order_id):
-        if not isinstance(order_id,str) or order_id.strip  == "" or order_id == None:
+        if not isinstance(order_id,str) or order_id.strip()  == "" or order_id == None:
             raise ValueError("Invalid Order - Id Format.")
         for order in self.orders:
            if order.order_id == order_id:
@@ -71,21 +66,26 @@ class User:
         raise IndexError("Invalid Order Id.")
         
     def delete_checkout(self,order_id):
-        if not isinstance(order_id,str) or order_id.strip  == "" or order_id == None:
+        if not isinstance(order_id,str) or order_id.strip()  == "" or order_id == None:
             raise ValueError("Invalid Order - Id Format.")
         print("Processing User Request")
-        for order in self.orders:
-           if order.order_id == order_id:
-              self.orders.remove(order)
-              print("Checkout cancelled.")
-              break
+        orderIds = [order.order_id for order in self.orders]
+        print(orderIds)
+        if not order_id in orderIds:
+           raise ValueError("Invalid order id.")
+        del_item_index = orderIds.index(order_id)
+        print(del_item_index)
+        print("Checkout cancelled.")
+        self.orders.pop(del_item_index)
+      
+           
     def to_json_dict(self):
        return {
           "name": self.name,
           "email": self.email,
           "orders": [order.to_json_dict() for order in self.orders],
           "user_id": self.user_id,
-          "cart": [[product.to_json_dict(),qty] for product,qty in self.cart]
+          "cart": [[product.get_product_id(),qty] for product,qty in self.cart]
        }
     
     

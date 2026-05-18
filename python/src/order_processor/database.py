@@ -1,6 +1,6 @@
 import json
 import os
-from storage import System
+from System import System
 from products import Product
 from user import User
 from order import Order
@@ -26,11 +26,11 @@ class Persistence():
                  new_product = Product(value["id"],value["name"],value["price"],value["stock"])
                  system.add_product(new_product)
               for key,value in system_in_dictionary["Users"].items():
-                 user_orders = [Order([(Product(product["id"],product["name"],product["price"],product["stock"]),qty) for product, qty in order["items"]], order["order_id"],order["date"],order["total"] )for order in value["orders"]]
+                 user_orders = [Order([(system.product_lookup(product),qty) for product, qty in order["items"]], order["order_id"],order["date"],order["total"] )for order in value["orders"]]
                  name = value["name"]
                  email = value["email"]
                  user_id = value["user_id"]
-                 new_user = User(name,email,user_orders,[(Product(product["id"],product["name"],product["price"],product["stock"]),qty) for product, qty in value["cart"]],user_id)
+                 new_user = User(name,email,user_orders,[(system.product_lookup(product),qty) for product, qty in value["cart"]],user_id)
                  system.add_user(new_user)
               return system
         print(f"File '{filename}' does not exist yet. A new system has been created.")

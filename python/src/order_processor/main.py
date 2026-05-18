@@ -11,12 +11,13 @@ def main():
        system =  data.load("company")
     except FileNotFoundError as f: print(f"Error! {f}")
 
-    system.add_product(Product("p001","laptop",130,20 ))
-    system.add_product(Product("p002","smartglasses",240,20))
-    system.add_product(Product("p003","phone",110,23))
-    system.add_product(Product("p004","Tablets",250,40))
-    system.add_product(Product("p005","SmartWatch",350,90))
-    data.save("company",system)
+    if not system.products:
+      system.add_product(Product("p001","laptop",130,20 ))
+      system.add_product(Product("p002","smartglasses",240,20))
+      system.add_product(Product("p003","phone",110,23))
+      system.add_product(Product("p004","Tablets",250,40))
+      system.add_product(Product("p005","SmartWatch",350,90))
+      data.save("company",system)
     
     current_user = ""
     status = ""
@@ -28,6 +29,7 @@ def main():
       user_id = string_validation(current_user,"Enter your user_id to proceed: ")
       try:
         user = system.login(user_id)
+        print(f"Welcome back {user.get_user_name()}")
       except ValueError as v: print(v) 
       current_user = user
       print()
@@ -88,7 +90,7 @@ def main():
               data.save("company",system)                                       
       elif choice == 3: 
           try:
-              order_id = current_user.checkout()
+              order_id = current_user.checkout(system)
               print(f"Order Id - {order_id}")
               data.save("company",system)
           except ValueError as val: print(f"Error! {val}")           
