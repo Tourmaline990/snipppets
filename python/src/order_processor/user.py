@@ -46,7 +46,7 @@ class User:
        total = 0
        num = 1
        for product, qty in self.cart:
-          print(f"{num} {product.get_product_id()} -- {product.get_product_name()}  X {qty} ")
+          print(f"{num}. {product.get_product_id()} -- {product.get_product_name()}  X {qty} ")
           total += product.get_product_price() * qty
           num += 1
        print(f"Total: ${total:.2f}")   
@@ -70,11 +70,9 @@ class User:
             raise ValueError("Invalid Order - Id Format.")
         print("Processing User Request")
         orderIds = [order.order_id for order in self.orders]
-        print(orderIds)
         if not order_id in orderIds:
            raise ValueError("Invalid order id.")
         del_item_index = orderIds.index(order_id)
-        print(del_item_index)
         print("Checkout cancelled.")
         self.orders.pop(del_item_index)
       

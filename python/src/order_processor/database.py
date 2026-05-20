@@ -26,7 +26,7 @@ class Persistence():
                  new_product = Product(value["id"],value["name"],value["price"],value["stock"])
                  system.add_product(new_product)
               for key,value in system_in_dictionary["Users"].items():
-                 user_orders = [Order([(system.product_lookup(product),qty) for product, qty in order["items"]], order["order_id"],order["date"],order["total"] )for order in value["orders"]]
+                 user_orders = [Order([item for item in order["items"]], order["order_id"],order["date"],order["total"] )for order in value["orders"]]
                  name = value["name"]
                  email = value["email"]
                  user_id = value["user_id"]

@@ -10,7 +10,7 @@
             "name": "smartglasses",
             "id": "p002",
             "price": 240,
-            "stock": 20
+            "stock": 18
         },
         "p003": {
             "name": "phone",
@@ -22,37 +22,54 @@
             "name": "Tablets",
             "id": "p004",
             "price": 250,
-            "stock": 40
+            "stock": 36
         },
         "p005": {
             "name": "SmartWatch",
             "id": "p005",
             "price": 350,
-            "stock": 90
+            "stock": 87
         }
     },
     "Users": {
-        "rainbow65i42": {
+        "rainbowreck": {
             "name": "rainbow",
-            "email": "sunshine@gmail.com",
+            "email": "rainbow@sunshine.com",
             "orders": [
                 {
-                    "order_id": "orderxmesg",
+                    "order_id": "ordercvxt",
                     "items": [
-                        [
-                            "p004",
-                            3
-                        ],
-                        [
-                            "p005",
-                            6
-                        ]
+                        {
+                            "name": "SmartWatch",
+                            "price": 350,
+                            "product_id": "p005",
+                            "qty": 3
+                        },
+                        {
+                            "name": "Tablets",
+                            "price": 250,
+                            "product_id": "p004",
+                            "qty": 4
+                        }
                     ],
-                    "date": "2026-05-18 13:01:19",
-                    "total": 2850
+                    "date": "2026-05-18 22:48:47",
+                    "total": 2050
+                },
+                {
+                    "order_id": "order0edt1",
+                    "items": [
+                        {
+                            "name": "smartglasses",
+                            "price": 240,
+                            "product_id": "p002",
+                            "qty": 2
+                        }
+                    ],
+                    "date": "2026-05-19 21:49:07",
+                    "total": 480
                 }
             ],
-            "user_id": "rainbow65i42",
+            "user_id": "rainbowreck",
             "cart": []
         }
     }

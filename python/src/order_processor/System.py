@@ -10,7 +10,7 @@ class System:
         self.users = {}
         
     def product_lookup(self,product_id):
-        if not isinstance(product_id,str) or product_id == None or product_id.strip() == "":
+        if not isinstance(product_id,str) or product_id.strip() == "":
             raise ValueError("Invalid Product Id")
         if not product_id in self.products:
             raise IndexError("Product Id not found")
@@ -48,7 +48,7 @@ class System:
     
     def signup(self,name,email):
         if not (isinstance(email,str) and isinstance(name,str)) or (name.strip() == "" and email.strip() == ""):
-            raise ValueError("Provide Valid Information(name and email)")
+            raise ValueError("Provide Valid Information (name and email)")
         new_user = User(name,email)
         self.add_user(new_user)
         return new_user
@@ -60,6 +60,7 @@ class System:
         order = Order(user.cart)
         user.orders.append(order)
         user.cart.clear()
+        print("Checkout Successful.")
         return order.get_order_id()
     
     def to_json_dict(self):

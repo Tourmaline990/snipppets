@@ -6,11 +6,17 @@ import copy
 class Order:
     
     def __init__(self,items,order_id = None,date = None,total = None):
-        self.items = copy.deepcopy(items)
+        self.items =  self.cart_conversion(items)
         self.order_id = order_id if order_id is not None else self.generate_order_id()
         self.date = date if date is not None else self.present_time()
         self.total = total if total is not None else self.calculate_total()
-        
+
+    def cart_conversion(self,items):
+       for item in items:
+          if isinstance(item,tuple):
+           return [{"name": product.get_product_name(),"price": product.get_product_price(),"product_id":product.get_product_id(),"qty":qty} for product,qty in items]
+       return items
+     
     def get_order_id(self):
        return self.order_id
     
@@ -29,10 +35,10 @@ class Order:
 
     
     def calculate_total(self):
-     sum = 0
-     for product,qty in self.items:
-        sum += product.get_product_price() * qty
-     return sum
+     total_amt = 0
+     for item in self.items:
+        total_amt += item["price"] * item["qty"]
+     return total_amt
     
     def display(self):
        print()
@@ -40,8 +46,8 @@ class Order:
        print(f"ORDER ID - {self.order_id}")
        print() 
        print("     -- purchase --    ")
-       for product, qty in self.items:
-          print(f"{product.get_product_name()}  X  {qty}")
+       for item in self.items:
+          print(f"{item["name"]} -> ${item["price"]:.2f}  X  {item["qty"]}")
        print()
        print(f"TOTAL ORDER AMOUNT - ${self.total:.2f}")
        print()
@@ -50,7 +56,7 @@ class Order:
     def to_json_dict(self):
        return{
           "order_id": self.order_id,
-          "items": [[product.get_product_id(),qty] for product,qty in self.items],
+          "items": self.items,
           "date": self.date,
           "total": self.total
        }
