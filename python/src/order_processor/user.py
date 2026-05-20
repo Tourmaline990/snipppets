@@ -73,8 +73,9 @@ class User:
         if not order_id in orderIds:
            raise ValueError("Invalid order id.")
         del_item_index = orderIds.index(order_id)
-        order = self.orders.pop(del_item_index)
+        order = self.orders[del_item_index]
         system.stock_return(order.items)
+        self.orders.pop(del_item_index)
         print("Checkout cancelled.")
       
            
