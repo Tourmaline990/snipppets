@@ -10,7 +10,7 @@
             "name": "smartglasses",
             "id": "p002",
             "price": 240,
-            "stock": 18
+            "stock": 20
         },
         "p003": {
             "name": "phone",
@@ -54,19 +54,6 @@
                     ],
                     "date": "2026-05-18 22:48:47",
                     "total": 2050
-                },
-                {
-                    "order_id": "order0edt1",
-                    "items": [
-                        {
-                            "name": "smartglasses",
-                            "price": 240,
-                            "product_id": "p002",
-                            "qty": 2
-                        }
-                    ],
-                    "date": "2026-05-19 21:49:07",
-                    "total": 480
                 }
             ],
             "user_id": "rainbowreck",

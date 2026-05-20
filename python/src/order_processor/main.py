@@ -114,7 +114,7 @@ def main():
           if proceed == "yes":
               order_id = string_validation("","Enter your order_id to proceed")
               try:
-                current_user.delete_checkout(order_id)
+                current_user.delete_checkout(order_id,system)
                 data.save("company",system)
               except (IndexError,FileNotFoundError,ValueError) as error:
                  print(error)

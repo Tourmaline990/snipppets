@@ -65,7 +65,7 @@ class User:
               return order 
         raise IndexError("Invalid Order Id.")
         
-    def delete_checkout(self,order_id):
+    def delete_checkout(self,order_id,system):
         if not isinstance(order_id,str) or order_id.strip()  == "" or order_id == None:
             raise ValueError("Invalid Order - Id Format.")
         print("Processing User Request")
@@ -73,8 +73,9 @@ class User:
         if not order_id in orderIds:
            raise ValueError("Invalid order id.")
         del_item_index = orderIds.index(order_id)
+        order = self.orders.pop(del_item_index)
+        system.stock_return(order.items)
         print("Checkout cancelled.")
-        self.orders.pop(del_item_index)
       
            
     def to_json_dict(self):

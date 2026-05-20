@@ -63,6 +63,14 @@ class System:
         print("Checkout Successful.")
         return order.get_order_id()
     
+    def stock_return(self,cart):
+        if not cart:
+         raise ValueError("No order")
+        for item in cart:
+            product = self.product_lookup(item["product_id"])
+            product.increase_stock_quantity(item["qty"])
+
+    
     def to_json_dict(self):
         return{
             "Products": {key: value.to_json_dict() for key,value in self.products.items()},

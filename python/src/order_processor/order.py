@@ -12,8 +12,8 @@ class Order:
         self.total = total if total is not None else self.calculate_total()
 
     def cart_conversion(self,items):
-       for item in items:
-          if isinstance(item,tuple):
+       if items:
+          if isinstance(items[0],tuple):
            return [{"name": product.get_product_name(),"price": product.get_product_price(),"product_id":product.get_product_id(),"qty":qty} for product,qty in items]
        return items
      
