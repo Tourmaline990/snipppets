@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 public class Thread
 {
@@ -11,15 +12,18 @@ public class Thread
     }
     public void AddResponse(Response response)
     {
+        if (_responses.Count < 1)
+        {   
+          _question.SetIsCompleted(true);
+        }
         _responses.Add(response);
-        _question.SetIsCompleted(true);
         
     }
     public void Display()
     {
         if (_responses.Count > 0)
         {
-          Console.WriteLine($"{_question.Display()} \n {_question.IsCompleteDisplay()} ============ {_responses.Count}");
+          Console.WriteLine($"{_question.Display()} \n \n {_question.IsCompleteDisplay()} ============ {_responses.Count}");
           foreach (Response item in _responses)
           {
             Console.WriteLine(item.Display());
@@ -27,7 +31,7 @@ public class Thread
         }
         else
         {
-           Console.WriteLine($"{_question.Display()} \n {_question.IsCompleteDisplay()} =========== 0"); 
+           Console.WriteLine($"{_question.Display()} \n {_question.IsCompleteDisplay()} =========== {_responses.Count}"); 
         }
         
     }
@@ -37,13 +41,32 @@ public class Thread
     }
     public void FilterResponse(string CallerName)
     {
+        if (string.IsNullOrEmpty(CallerName))
+        {
+            throw new ArgumentNullException(nameof(CallerName),"Empty Input");
+        }
+        CallerName = CallerName.ToLower();
+        List<Response> CallerNameResponse = new List<Response>();
+        
         foreach (Response item in _responses)
         {
             if (item.GetCaller() == CallerName)
             {
+               CallerNameResponse.Add(item);
+            }
+        }
+        if (CallerNameResponse.Count > 0)
+        {
+            Console.WriteLine("Search results: ");
+            foreach (Response item in CallerNameResponse)
+            {
                 Console.WriteLine(item.Display());
             }
         }
+        else
+        {
+            throw new ArgumentException(nameof(CallerName), "No search result matches query criteria");
+        }
     }
-   
+   ///
 }

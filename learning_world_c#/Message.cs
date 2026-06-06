@@ -6,11 +6,18 @@ public abstract class Message
     
     public Message(string text,string caller,DateTime date)
     {
-        _text = text;
-        _callerName = caller;
+        _text = ValidateInput(text);
+        _callerName = ValidateInput(caller).ToLower();
         _date = date;
     }
-    
+    private string ValidateInput(string param)
+    {
+        if (string.IsNullOrEmpty(param))
+        {
+            throw new ArgumentNullException(nameof(param),"Empty Input");
+        }
+        return param;
+    }
     public abstract string Display();
     
     public string GetCaller()
@@ -25,4 +32,5 @@ public abstract class Message
     {
         return _date;
     }
+    ///
 }

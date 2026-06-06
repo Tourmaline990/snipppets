@@ -10,12 +10,19 @@ public class Exercise
     
     public Exercise(string question)
     {
-        _question = question;
-        
+        _question = ValidateInput(question);
+    }
+    private string ValidateInput(string param)
+    {
+        if (string.IsNullOrEmpty(param))
+        {      
+            throw new ArgumentNullException(nameof(param),"Empty Input.");
+        }
+        return param;
     }
     public int ExerciseOptionCount()
     {
-        return _options.Count - 1;
+        return _options.Count;
     }
     public void AddOption(ExerciseOption option)
     {
@@ -25,7 +32,7 @@ public class Exercise
          {
            foreach (ExerciseOption item in _options)
            {
-            bools.Add(item.GetCorrectStatus());
+             bools.Add(item.GetCorrectStatus());
            } 
            foreach (bool item in bools)
             {
@@ -66,6 +73,15 @@ public class Exercise
     {
         return _score;
     }
+    public bool CorrectAnswerInOptions()
+    {
+        ExerciseOption? foundCorrectAnswer = _options.Find(O => O.GetCorrectStatus() == true);
+        if (foundCorrectAnswer == null)
+        {
+            throw new Exception("No correct answer for exercise yet.");
+        }
+        return true;
+    }
     public void DisplayExercise()
     {
         int num = 1;
@@ -87,5 +103,5 @@ public class Exercise
     {
         return _isCompleted;
     }
-   
+   ///
 }

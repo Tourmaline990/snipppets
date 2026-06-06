@@ -6,13 +6,21 @@ public class Lesson
     private string _text;
     private string _example;
     private List<Exercise> _exercises = new List<Exercise>();
-    private bool _isCompleted = false;
+    
 
     public Lesson(string text,string example,string Topic)
     {
-        _text = text;
-        _example = example;
-        _topic = Topic;
+        _text = ValidateInput(text);
+        _example = ValidateInput(example);
+        _topic = ValidateInput(Topic);
+    }
+    private string ValidateInput(string param)
+    {
+        if (string.IsNullOrEmpty(param))
+        {
+            throw new ArgumentNullException(nameof(param),"Empty Input");
+        }
+        return param;
     }
     public void AddExercise(Exercise exercise)
     {
@@ -26,31 +34,32 @@ public class Lesson
     {
         int num = 1;
         Console.WriteLine(_topic);
+        Console.WriteLine();
         Console.WriteLine(_text);
         Console.WriteLine();
-        Console.WriteLine($"Example: {_example}");
+        Console.WriteLine($"Example: \n{_example}");
         Console.WriteLine();
         foreach (Exercise item in _exercises)
         {
             Console.WriteLine($">>> {num}"); 
             item.DisplayExercise();
-          
+            num ++;
         }
     }
     public void ExerciseAnswer(int Exercisenum,int optionnum)
     {
-        if (Exercisenum >= _exercises.Count || Exercisenum < 1)
+        if (Exercisenum >= _exercises.Count || Exercisenum < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(Exercisenum),"No such Exercise.");
+            throw new ArgumentOutOfRangeException(nameof(Exercisenum),"No such Exercise, Index out of range.");
         }
-        Exercise exercise = _exercises[Exercisenum - 1];
-        if (optionnum > exercise.ExerciseOptionCount() || optionnum < 1)
+        Exercise exercise = _exercises[Exercisenum];
+        if (optionnum >= exercise.ExerciseOptionCount() || optionnum < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(optionnum),"Invalid option");
         }
         exercise.Evaluate(optionnum);
     }
-    public int CalculateLessonScore()
+    public int GetLessonScore()
     {
         int score = 0;
         foreach (Exercise exercise in _exercises)
@@ -77,19 +86,31 @@ public class Lesson
         {
             if (!exercise.GetIsCompleted())
             {
-                return _isCompleted;
+                return false;
             }
         }
-        return _isCompleted = true;
+        return true;
     }
     public void RemoveExercise(int Index)
     {
-        Index = Index - 1;
-        if (Index >= ExerciseNumber())
+        if (Index >= ExerciseNumber() || Index < 0)
         {
             throw new ArgumentException("Index out of range");
         }
         _exercises.RemoveAt(Index);
     }
-    
+    public bool ExerciseAreValid()
+    {
+        int num = 1;
+        foreach (Exercise item in _exercises)
+        {
+            if (!item.CorrectAnswerInOptions())
+            {
+                throw new Exception($"Exercise {num} has no correct answer");
+            }
+            num++;
+        }
+        return true;
+    }
+    ///
 }

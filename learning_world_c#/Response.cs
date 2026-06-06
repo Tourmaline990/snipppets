@@ -11,5 +11,5 @@ public class Response: Message
     {
         return $"{GetCaller()} Responded: {GetText()}\n {GetDate()}";
     }
-    
+    ///
 }

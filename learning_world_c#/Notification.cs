@@ -7,7 +7,7 @@ public class Notification : Message
     }
     public override string Display()
     {
-        return $"From {GetCaller()} >>>>\n{GetText()}\n{GetDate()}";
+        return $"From {GetCaller()} \n >>>> {GetText()}\n{GetDate()}";
     }
-
+///
 }

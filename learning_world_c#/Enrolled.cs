@@ -2,106 +2,79 @@ public class Enrolled
 {
     private CourseSession _courseSession;
     private Learner _learner;
+    private Grade _grade;
+    private bool _inForum;
     private List<Notification> _notifications = new List<Notification>();
     private int _lesson_progress = 0;
     public Enrolled(CourseSession courseSession,Learner learner)
     {
         _courseSession = courseSession;
         _learner = learner;
+        _grade = new Grade(_courseSession.GetCourse(true));
+        _inForum = false;
     }
     public Learner GetLearner()
     {
         return _learner;
     }
-    public bool CourseStatus()
+    public void SetInForum(bool value)
     {
-        int num = 1;
-        for (int i = 0; i < _courseSession.GetCourse().LessonCount(); i++)
-        {
-           Lesson lesson = _courseSession.GetCourse().GetLesson(i);
-           if (lesson.GetIsCompleted())
-            {
-                num++;
-            }
-
-        }
-        if (num == _courseSession.GetCourse().LessonCount())
-        {
-            return true;
-        }
-        return false;
+        _inForum = value;
     }
-    public string CheckGradeProgress()
+    public bool GetInForum()
     {
-        int val = 0;
-        for (int i = 0; i < _lesson_progress; i++)
-        {
-           val += _courseSession.GetCourse().GetLesson(i).CalculateLessonScore();
-
-        }
-       int totalLessonsScore = _courseSession.GetCourse().LessonCount() * _courseSession.GetCourse().GetLesson(1).ExerciseNumber() * 2;
-       int value = val/totalLessonsScore * 100;
-       return $"{value}%";
+        return _inForum;
+    }
+    public void ViewGrade()
+    {
+            _grade.PercentageCompleted(_lesson_progress);
+            _grade.CompletedScorePercent(_lesson_progress);
+            _grade.TotalGrade();
+            _grade.ViewGrade();  
     }
     public void Submit(Lesson lesson)
     {
-        if (_courseSession.GetIsClosed())
-        {
-            throw new ArgumentException("Submission Failed. Course is closed for the block.");
-        }
         if (_courseSession.SubmissionDeadline(_lesson_progress))  
         {
             throw new ArgumentException(" Submission Failed. Assignment is locked.");
         }
-        if(!CourseStatus())
+        if (_courseSession.GetCourse().GetLesson(_lesson_progress) != lesson)
+         {
+            throw new ArgumentException(nameof(lesson),"Lesson Object Not Recognized.");
+         }
+        if (!lesson.GetIsCompleted())
         {
-            if (_courseSession.GetCourse().GetLesson(_lesson_progress) == lesson)
-              {
-               if (lesson.GetIsCompleted())
-                {
-                  _lesson_progress ++;
-                }
-                else
-                {   
-                  throw new ArgumentException(nameof(lesson),"Lesson is not complete.");
-                }
-             }
-            else
-            {
-                throw new ArgumentException(nameof(lesson),"Lesson Object Not Recognized.");
-            }
+            throw new ArgumentException(nameof(lesson),"Lesson is not complete.");
         }
-        else{
-        Notification notification = new Notification("Course Update","You have completed your course activity for this block. ",DateTime.Now);
-        AddNotification(notification);
-        // Notify.
-        }
-    }
+        _grade.updateLessonScore(_lesson_progress,lesson.GetLessonScore());
+        _lesson_progress ++;
+}
     public Lesson TakeLesson()
     {
         Lesson lesson;
-        if (_lesson_progress > _courseSession.GetCourse().LessonCount())
+        if (_lesson_progress >= _courseSession.GetCourse().LessonCount())
         {
             throw new ArgumentOutOfRangeException("Index out of range (Present Progress is greater than available course Lessons).");
-
+        }
+        if (_courseSession.GetCourse().GetLesson(_lesson_progress).GetIsCompleted())
+        {
+            throw new Exception("Error! learner's progress corrupted.");
         }
         if (!_courseSession.GetCourse().GetLesson(_lesson_progress).GetIsCompleted() == true)
         {
-            lesson = _courseSession.GetCourse().GetLesson(_lesson_progress);
-        }
-        else
-        {
             if (_courseSession.SubmissionDeadline(_lesson_progress))
+              {
+                  _lesson_progress = _lesson_progress + 1;
+                  lesson = _courseSession.GetCourse().GetLesson(_lesson_progress);
+              }
+            else
             {
-                _lesson_progress = _lesson_progress + 1;
                 lesson = _courseSession.GetCourse().GetLesson(_lesson_progress);
-                return lesson;
             }
-            throw new ArgumentException("Last Lesson has not been submitted.");
+            return lesson;     
         }
-
-        return lesson;
         
+        return  _courseSession.GetCourse().GetLesson(_lesson_progress);
     }
     public void ViewNotifications()
     {
@@ -114,15 +87,9 @@ public class Enrolled
     {
         _notifications.Add(notification);
     }
-    public int GetLessonProgress()
+    public string FinalGrade()
     {
-        return _lesson_progress;
+        return  _grade.GetTotalGrade();
     }
-    public void ViewLessonScores()
-    {
-        for (int i = 0; i < _lesson_progress; i++)
-        {
-           Console.WriteLine ($"Lesson {i + 1} ==== {_courseSession.GetCourse().GetLesson(i).CalculateLessonScore()}");
-        }
-    }
+   ///
 }

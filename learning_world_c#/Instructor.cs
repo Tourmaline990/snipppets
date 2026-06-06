@@ -8,45 +8,47 @@ public class Instructor
     public Instructor(Forum forum,string name,string id,CourseSession courseSession)
     {
         _forum  = forum;
-        _name = "Instructor" + " " + name;
-        _InstructorId = id;
+        _name = "Instructor" + " " + ValidateInput(name);
+        _InstructorId = ValidateInput(id);
         _courseSession = courseSession;
+    }
+    private string ValidateInput(string Param)
+    {
+        if (string.IsNullOrEmpty(Param))
+        {
+            throw new ArgumentNullException(nameof(Param),"Empty Input.");
+        }
+        return Param;
     }
     public void AddLesson(Lesson lesson)
     {
-        _courseSession.GetCourse().AddLesson(lesson);
-        Notification notification = new Notification($"Instructor {_name}", $"A new lesson has been added to  Course: {_courseSession.GetCourse().GetId()}.",DateTime.Now);
-        _courseSession.Notify(notification);
-
+        if (lesson.ExerciseAreValid())
+        {
+           _courseSession.GetCourse(true).AddLesson(lesson);  
+        }
     }
     public void AddExercise(int LessonIndex, Exercise exercise)
     {
-        Lesson lesson =  _courseSession.GetCourse().GetLesson(LessonIndex - 1);
+        Lesson lesson =  _courseSession.GetCourse(true).GetLesson(LessonIndex);
         lesson.AddExercise(exercise);
-        Notification notification = new Notification($"Instructor {_name}",$"A new Exercise has been added to Lesson {LessonIndex} in Course: {_courseSession.GetCourse().GetId()}",DateTime.Now);
-        _courseSession.Notify(notification);
     }
     public void RemoveExercise(int LessonIndex,int exerciseIndex)
     {
-        _courseSession.GetCourse().GetLesson(LessonIndex - 1).RemoveExercise(exerciseIndex - 1);
-        Notification notification = new Notification($"Intructor {_name}",$"Removed an exercise from Lesson {LessonIndex} in Course: {_courseSession.GetCourse().GetId()}",DateTime.Now);
-        _courseSession.Notify(notification);
-
+        _courseSession.GetCourse(true).GetLesson(LessonIndex).RemoveExercise(exerciseIndex);
     }
     public void RemoveLesson(int Index)
     {
-        _courseSession.GetCourse().RemoveLesson(Index - 1);
-        Notification notification = new Notification($"Intructor {_name}",$"Removed  Lesson {Index} in Course: {_courseSession.GetCourse().GetId()}",DateTime.Now);
-        _courseSession.Notify(notification);
+        _courseSession.GetCourse(true).RemoveLesson(Index);  
     }
-    
     public void Announcement(string text)
     {
+        text = ValidateInput(text);
         Question question = new Question(text,_name,DateTime.Now);
         _forum.AddQuestion(question);
     }
     public void RespondToQuestion(string text,int ThreadIndex)
     {
+       text = ValidateInput(text);
        Thread thread =  _forum.GetThread(ThreadIndex);
        Response response = new Response(text,_name,DateTime.Now);
        thread.AddResponse(response);
@@ -64,12 +66,12 @@ public class Instructor
     }
     public void LastWeek()
     {
-        if (_courseSession.IsLastWeek())
+        if (_courseSession.LastWeek())
         {
             Notification notification = new Notification($"{_name}", "Notice: Last week of course activity, all coursework should be turned in early.",DateTime.Now);
             _courseSession.Notify(notification);
         }
     }
 
-    
+    ///
 }

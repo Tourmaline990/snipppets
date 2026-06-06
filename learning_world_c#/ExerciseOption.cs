@@ -5,13 +5,21 @@ public class ExerciseOption
     
     public ExerciseOption(string option)
     {
-        _option = option;
+        _option = ValidateInput(option);
         _correct = false;
     }
     public ExerciseOption(string option,bool correct)
     {
-        _option = option;
+        _option = ValidateInput(option);
         _correct = correct;
+    }
+    private string ValidateInput(string Param)
+    {
+        if (string.IsNullOrEmpty(Param))
+        {
+            throw new ArgumentNullException(nameof(Param),"Empty Input.");
+        }
+        return Param;
     }
     public string DisplayOption()
     {
@@ -21,5 +29,5 @@ public class ExerciseOption
     {
         return _correct;
     }
-
+ ///
 }

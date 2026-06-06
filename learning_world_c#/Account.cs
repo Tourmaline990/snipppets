@@ -9,8 +9,8 @@ public class Account
 
     public Account(string name,string email)
     {
-        _name = name;
-        _email = email;
+        _name = ValidateInput(name);
+        _email = ValidateInput(email);
         _learning_id = GenerateId();
     }
 
@@ -31,9 +31,11 @@ public class Account
         {
             index_value.Add(letters[item]);
         }
+        learner_id = _name;
         foreach (string item in index_value)
         {
-            learner_id = _name += item;
+            
+            learner_id += item;
         }
         return learner_id;
     }
@@ -47,8 +49,15 @@ public class Account
     }
     public string Display()
     {
-        return $">>> Name: {_name} Email: {_email} Learner Id: {_learning_id}";
+        return $">>> Name: {_name} | Email: {_email} | Learner Id: {_learning_id}";
     }
-    
+    private string ValidateInput(string param)
+    {
+        if (string.IsNullOrEmpty(param))
+        {
+            throw new ArgumentNullException(nameof(param),"Empty Input");
+        }
+        return param;
+    }
 }
 

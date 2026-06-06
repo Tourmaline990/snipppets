@@ -27,6 +27,6 @@ public class Question : Message
     {
         return $"{GetCaller()} Asked: {GetText()} \n {GetDate()}";
     }
-    
+    ///
     
 }

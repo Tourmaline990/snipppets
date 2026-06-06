@@ -13,14 +13,22 @@ public class ForumMember
     }
     public void AskQuestion(string question)
     {
+        if (string.IsNullOrEmpty(question))
+        {
+            throw new ArgumentNullException(nameof(question),"Question is Empty");
+        }
         Question question1 = new Question(question,_enrolled.GetLearner().GetLearnerId(),DateTime.Now);
         _forum.AddQuestion(question1);
     }
-    public void AnswerQuestion(int threadIndex,string text)
+    public void RespondToQuestion(int threadIndex,string text)
     {
         if (threadIndex < 1 || threadIndex >= _forum.ThreadCount())
         {
             throw new ArgumentException(nameof(threadIndex),"Index out of range");
+        }
+        if (string.IsNullOrEmpty(text))
+        {
+            throw new ArgumentNullException(nameof(text),"Question is Empty");
         }
        Response response = new Response(text,_enrolled.GetLearner().GetLearnerId(),DateTime.Now);
        Thread thread  = _forum.GetThread(threadIndex);
@@ -41,4 +49,5 @@ public class ForumMember
     {
         _forum.GetQuestionByCaller(_enrolled.GetLearner().GetLearnerId());
     }
+    ///
 }
