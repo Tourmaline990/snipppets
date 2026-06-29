@@ -1,6 +1,7 @@
 using System.ComponentModel;
+using System.IO.Pipes;
 
-public class Lesson
+public class Lesson : LearningMaterial
 {
     private string _topic;
     private string _text;
@@ -10,9 +11,9 @@ public class Lesson
 
     public Lesson(string text,string example,string Topic)
     {
-        _text = ValidateInput(text);
-        _example = ValidateInput(example);
-        _topic = ValidateInput(Topic);
+        _text = text;
+        _example = example;
+        _topic = Topic;
     }
     private string ValidateInput(string param)
     {
@@ -22,13 +23,31 @@ public class Lesson
         }
         return param;
     }
+    protected override void ValidatePublish()
+    {
+        ValidateInput(_text);
+        ValidateInput(_example);
+        ValidateInput(_topic);
+        if (_exercises.Count == 0)
+        {
+            throw new Exception("No exercise in lesson.");
+        }
+        if (_exercises.Count > 5 || _exercises.Count != 5)
+        {
+            throw new Exception($"5 exercises per lesson. {_exercises.Count} found.");
+        }
+        int num = 1;
+        foreach (Exercise item in _exercises)
+        {
+            if (item.GetStatus() != CourseMaterialStatus._published)
+            {
+                throw new Exception($"Exercise {num} is not published.");
+            }
+        }
+    }
     public void AddExercise(Exercise exercise)
     {
-        if (_exercises.Count == 5)
-        {
-            throw new ArgumentOutOfRangeException(nameof(exercise),"5 exercises per lesson.");
-        }
-        _exercises.Add(exercise);
+       AddMaterial(_exercises,exercise);
     }
     public void DisplayLesson()
     {
@@ -46,7 +65,7 @@ public class Lesson
             num ++;
         }
     }
-    public void ExerciseAnswer(int Exercisenum,int optionnum)
+    public bool ExerciseAnswer(int Exercisenum,int optionnum)
     {
         if (Exercisenum >= _exercises.Count || Exercisenum < 0)
         {
@@ -57,20 +76,7 @@ public class Lesson
         {
             throw new ArgumentOutOfRangeException(nameof(optionnum),"Invalid option");
         }
-        exercise.Evaluate(optionnum);
-    }
-    public int GetLessonScore()
-    {
-        int score = 0;
-        foreach (Exercise exercise in _exercises)
-        {
-           if (!exercise.GetIsCompleted())
-            {
-                throw new ArgumentOutOfRangeException("Exercise Incompleted.");
-            } 
-            score += exercise.GetScore();
-        }
-        return score;
+       return exercise.Evaluate(optionnum);
     }
     public int ExerciseNumber()
     {
@@ -80,37 +86,10 @@ public class Lesson
     {
         return _topic;
     }
-    public bool GetIsCompleted()
-    {
-        foreach (Exercise exercise in _exercises)
-        {
-            if (!exercise.GetIsCompleted())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+   
     public void RemoveExercise(int Index)
     {
-        if (Index >= ExerciseNumber() || Index < 0)
-        {
-            throw new ArgumentException("Index out of range");
-        }
-        _exercises.RemoveAt(Index);
+       RemoveMaterial(Index,_exercises);
     }
-    public bool ExerciseAreValid()
-    {
-        int num = 1;
-        foreach (Exercise item in _exercises)
-        {
-            if (!item.CorrectAnswerInOptions())
-            {
-                throw new Exception($"Exercise {num} has no correct answer");
-            }
-            num++;
-        }
-        return true;
-    }
-    ///
+   //
 }

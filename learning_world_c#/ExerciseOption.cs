@@ -1,4 +1,4 @@
-public class ExerciseOption
+public class ExerciseOption 
 {
     private string _option;
     private bool _correct;
@@ -29,5 +29,6 @@ public class ExerciseOption
     {
         return _correct;
     }
- ///
+   
+ 
 }

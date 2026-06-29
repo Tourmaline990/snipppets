@@ -1,27 +1,48 @@
 public class ForumMember
 {
-    private Enrolled _enrolled;
+    private string _learnerId;
     private Forum _forum;
-    public ForumMember(Enrolled enrolled,Forum forum )
+    private List<Notification> _inbox = new List<Notification>();
+    private MemberStatus _status;
+    private MemberInterruptionState _interruptionState;
+    public ForumMember(string learnerId,Forum forum)
     {
-        _enrolled = enrolled;
+        _learnerId = learnerId;
         _forum = forum;
+        _status = MemberStatus._NA;
+        _interruptionState = MemberInterruptionState._none;
     }
-    public Enrolled GetEnrolled()
+    public void AddNotification(Notification notification)
     {
-        return _enrolled;
+        _inbox.Add(notification);
+    }
+    public string GetId()
+    {
+        return _learnerId;
     }
     public void AskQuestion(string question)
     {
+        if (_status == MemberStatus._removed || _interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Not available");
+        }
         if (string.IsNullOrEmpty(question))
         {
             throw new ArgumentNullException(nameof(question),"Question is Empty");
         }
-        Question question1 = new Question(question,_enrolled.GetLearner().GetLearnerId(),DateTime.Now);
+        Question question1 = new Question(question,_learnerId,DateTime.UtcNow);
         _forum.AddQuestion(question1);
+        if (_status == MemberStatus._NA)
+        {
+            _status = MemberStatus._active;
+        }
     }
     public void RespondToQuestion(int threadIndex,string text)
     {
+        if (_status == MemberStatus._removed || _interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Not available");
+        }
         if (threadIndex < 1 || threadIndex >= _forum.ThreadCount())
         {
             throw new ArgumentException(nameof(threadIndex),"Index out of range");
@@ -30,24 +51,62 @@ public class ForumMember
         {
             throw new ArgumentNullException(nameof(text),"Question is Empty");
         }
-       Response response = new Response(text,_enrolled.GetLearner().GetLearnerId(),DateTime.Now);
+       Response response = new Response(text,_learnerId,DateTime.UtcNow);
        Thread thread  = _forum.GetThread(threadIndex);
        thread.AddResponse(response);
        string text1 = $"{response.GetCaller()} Responded to a question. For more details, view Forum";
-       _forum.Notify(text1,DateTime.Now);
-       
+       _forum.Notify(text1);
+       if (_status == MemberStatus._NA)
+        {
+            _status = MemberStatus._active;
+        }
     }
     public void ViewForum()
     {
+        if (_status == MemberStatus._removed || _interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Not available");
+        }
         _forum.DisplayForum();
     }
     public void ViewYourResponses()
     {
-        _forum.GetResponsesByCaller(_enrolled.GetLearner().GetLearnerId());
+        if (_status == MemberStatus._removed || _interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Not available");
+        }
+        _forum.GetResponsesByCaller(_learnerId);
     }
     public void ViewYourQuestions()
     {
-        _forum.GetQuestionByCaller(_enrolled.GetLearner().GetLearnerId());
+        if (_status == MemberStatus._removed || _interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Not available");
+        }
+        _forum.GetQuestionByCaller(_learnerId);
     }
-    ///
+    public MemberStatus GetStatus()
+    {
+        if (_forum.GetForumState() == ForumActivityStatus._closed && _status == MemberStatus._NA)
+        {
+            _status = MemberStatus._dormant;
+        }
+        return _status;
+    }
+    public void Remove()
+    {
+        if (_status == MemberStatus._removed)
+        {
+            throw new  InvalidOperationException("Already Deleted");
+        }
+        _status = MemberStatus._removed;
+    }
+    public void FreezeAccount()
+    {
+        if (_interruptionState == MemberInterruptionState._freezed)
+        {
+            throw new InvalidOperationException("Already Frozen");
+        }
+        _interruptionState = MemberInterruptionState._freezed;
+    }
 }

@@ -2,31 +2,22 @@ using System.ComponentModel.DataAnnotations;
 
 public class Question : Message
 {
-    private bool _isComplete = false;
-   
+   private QuestionStatus _questionStatus;
     public Question(string text,string caller,DateTime date):base(text,caller,date)
     {
-       
+       _questionStatus = QuestionStatus._unAnswered;
     }
-    public string IsCompleteDisplay()
+    public string DisplayState()
     {
-        if (_isComplete)
+        if (_questionStatus == QuestionStatus._answered)
         {
-            return $"[√]";
+            return "[√]";
         }
-        else
-        {
-            return $"[X]";
-        }
-    }
-    public void SetIsCompleted(bool value)
-    {
-        _isComplete = value;
+        return "[X]";
     }
     public override string Display()
     {
-        return $"{GetCaller()} Asked: {GetText()} \n {GetDate()}";
+        return $"{GetCaller()} Asked: {GetText()} \n {GetDate()}   |  {DisplayState()}";
     }
-    ///
-    
+//  
 }

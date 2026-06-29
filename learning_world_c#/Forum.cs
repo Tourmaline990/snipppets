@@ -3,46 +3,92 @@ using System.Globalization;
 public class Forum
 {
     private List<ForumMember> _members = new  List<ForumMember>();
-    private CourseSession _courseSession;
+    private string _sessionId = null!;
     private List<Thread> _threads = new List<Thread>();
     private string _name;
-    public Forum(CourseSession courseSession, string name)
+    private  ForumInitialStatus _forumInitialStatus;
+    private ForumActivityStatus _activityStatus;
+    public Forum(string name)
     {
-        _courseSession = courseSession;
-        _name = ValidateInput(name);
+        _forumInitialStatus = ForumInitialStatus._drafed;
+        _name = name;
     }
-    private string ValidateInput(string Param)
+    public ForumInitialStatus GetInitialStatus()
     {
-        if (string.IsNullOrEmpty(Param))
+        return _forumInitialStatus;
+    }
+    public List<Dictionary<string,MemberStatus>> GetMemberParticipationStatus()
+    {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
         {
-            throw new ArgumentNullException(nameof(Param),"Empty Input.");
+            throw new InvalidOperationException("Failed! Not available");
         }
-        return Param;
+        List<Dictionary<string,MemberStatus>> data = new List<Dictionary<string, MemberStatus>>();
+        foreach (ForumMember item in _members)
+        {
+           data.Add(new Dictionary<string, MemberStatus>{{item.GetId(),item.GetStatus()}});
+        }
+        return data;
+    }
+    public void publish(string sessionId, CourseCatalog catalog)
+    {
+        // Possible design endpoint: Different department may need a forum, a baseclass catalog can be 
+        // created, where we validate sessionId before publishing forum.
+        if (_forumInitialStatus != ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("failed!, not drafted");
+        }
+        CourseSession courseSession = catalog.GetCourseSession(sessionId);
+        courseSession.ConfirmEligibility();
+        if (_members.Count != 0 || _threads.Count != 0)
+        {
+            throw new InvalidOperationException("Unidentified storage format");
+        }
+        _name = $"{courseSession.GetSessionId()} Forum";
+        _activityStatus = ForumActivityStatus._available;
     }
     public int ThreadCount()
     {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
         return _threads.Count;
     }
     public void AddMember(ForumMember forumMember)
     {
-        if (GetIsClosed())
+        if (_forumInitialStatus != ForumInitialStatus._published)
         {
-            throw new Exception("Forum is closed for the block.");
+            throw new InvalidOperationException("Not published");
         }
         _members.Add(forumMember);
-        forumMember.GetEnrolled().SetInForum(true);
-        Notify("A new member has been admitted.",DateTime.Now);
+        Notify("A new member has been admitted.");
     }
-    public CourseSession GetCourseSession()
+    public string GetSessionId()
     {
-        return _courseSession;
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
+        return _sessionId;
     }
-    
+    public ForumActivityStatus GetForumState()
+    {
+        if (_forumInitialStatus != ForumInitialStatus._published)
+        {
+            throw new InvalidOperationException("Not published");
+        }
+        return _activityStatus;
+    }
     public Thread GetThread(int Index)
     {
-        if (GetIsClosed())
+        if (_forumInitialStatus != ForumInitialStatus._published)
         {
-            throw new Exception("Forum is closed for the block.");
+            throw new InvalidOperationException("Not published");
+        }
+        if (_activityStatus != ForumActivityStatus._open)
+        {
+            throw new InvalidOperationException("Failed! Not available.");
         }
         if (Index >= _threads.Count || Index < 1 )
         {
@@ -52,26 +98,38 @@ public class Forum
     }
     public void AddThread(Thread thread)
     {
-        if (GetIsClosed())
+        if (_forumInitialStatus != ForumInitialStatus._published)
         {
-            throw new Exception("Forum is closed for the block.");
+            throw new InvalidOperationException("Not published");
+        }
+        if (_activityStatus != ForumActivityStatus._open)
+        {
+            throw new InvalidOperationException("Failed! Not available.");
         }
         _threads.Add(thread);
     }
     public void AddQuestion(Question question)
     {
-        if (GetIsClosed())
+        if (_forumInitialStatus != ForumInitialStatus._published)
         {
-            throw new Exception("Forum is closed for the block.");
+            throw new InvalidOperationException("Not published");
+        }
+        if (_activityStatus != ForumActivityStatus._open)
+        {
+            throw new InvalidOperationException("Failed! Not available.");
         }
         Thread thread = new Thread(question);
         AddThread(thread);
         string caller = question.GetCaller();
         string text = $"{caller} Added a question in forum, view forum for more details.";
-        Notify(text,DateTime.Now);
+        Notify(text);
     }
     public void DisplayForum()
     {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
         int num = 1;
         Console.WriteLine($"{_name}");
         foreach (Thread item in _threads)
@@ -81,10 +139,13 @@ public class Forum
             Console.WriteLine();
             num ++;
         }
-       
     }
     public void GetQuestionByCaller(string caller)
     {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
         caller = ValidateInput(caller);
         caller = caller.ToLower();
         int num = 0;
@@ -93,7 +154,7 @@ public class Forum
             if (item.GetQuestion().GetCaller() == caller)
             {
                 Console.WriteLine(item.GetQuestion().Display());
-                Console.WriteLine(item.GetQuestion().IsCompleteDisplay());
+                Console.WriteLine(item.GetQuestion().DisplayState());
                 Console.WriteLine();
                 num++;
             }
@@ -105,6 +166,10 @@ public class Forum
     }
     public void GetResponsesByCaller(string Caller)
     {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
         Caller = ValidateInput(Caller);
         Caller = Caller.ToLower();
         foreach (Thread completed in _threads) 
@@ -112,38 +177,77 @@ public class Forum
             completed.FilterResponse(Caller);
         }
     }
-    public void Notify(string text,DateTime date)
+    public void Notify(string text)
     {
-        Notification notification  = new Notification("Forum",text,date);
         foreach (ForumMember item in _members)
         {
-            item.GetEnrolled().AddNotification(notification);
+            item.AddNotification(new Notification("Forum",text,DateTime.UtcNow));
         }
-    }
-    public bool GetIsClosed()
-    {
-        if (_courseSession.GetIsClosed())
-        {
-            return  true;
-        }
-        return false;
     }
     public string GetForumName()
     {
         return _name;
     }
-    public ForumMember GetMember(Enrolled enrolled)
+    public ForumMember GetMember(string LearnerId)
     {
-      ForumMember? member =   _members.Find(E => E.GetEnrolled() == enrolled);
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
+        if (!VerifyLearner(LearnerId))
+        {
+            throw new ArgumentNullException(nameof(LearnerId), "No result matches query");
+        }
+        ForumMember member = _members.Find(E => E.GetId() == LearnerId)!;
+        return member;
+    }
+    public bool VerifyLearner(string learnerId)
+    {
+        if (_forumInitialStatus == ForumInitialStatus._drafed)
+        {
+            throw new InvalidOperationException("Failed! Not available");
+        }
+        if (string.IsNullOrEmpty(learnerId))
+        {
+            throw new ArgumentNullException(nameof(learnerId),"Provided  id is empty");
+        }
+        ForumMember? member = _members.Find(E => E.GetId() == learnerId);
         if (member == null)
         {
-            throw new ArgumentNullException(nameof(enrolled), "No result matches query");
+            return false;
         }
-        return member;
+        return true;
     }
     public int PresentMembers()
     {
+        if (_forumInitialStatus != ForumInitialStatus._published)
+        {
+            throw new InvalidOperationException("Not published");
+        }
         return _members.Count;
     }
-    ///
+    private string ValidateInput(string param)
+    {
+        if (string.IsNullOrEmpty(param))
+        {
+            throw new ArgumentNullException(nameof(param),"Empty Input");
+        }
+        return param;
+    }
+    public void Archive()
+    {
+        if (_forumInitialStatus != ForumInitialStatus._archived)
+        {
+            throw new InvalidOperationException("Already archived");
+        }
+        if (_forumInitialStatus != ForumInitialStatus._published)
+        {
+            throw new InvalidOperationException("Cannot archive forum, not published ");
+        }
+        if (_activityStatus != ForumActivityStatus._closed)
+        {
+             throw new  InvalidOperationException("Activity is ongoing cannot archive");
+        }
+        _forumInitialStatus = ForumInitialStatus._archived;
+    }
 }

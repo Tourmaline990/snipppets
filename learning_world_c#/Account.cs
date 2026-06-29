@@ -5,18 +5,29 @@ public class Account
 {
     private string _name;
     private string _email;
-    private string _learning_id;
+    private string _accountId = null!;
+    private AccountStatus _accountStatus;
 
     public Account(string name,string email)
     {
-        _name = ValidateInput(name);
-        _email = ValidateInput(email);
-        _learning_id = GenerateId();
+        _name = name;
+        _email = email;
+        _accountStatus = AccountStatus._drafted;
     }
-
-    public string GenerateId()
+    public void Register()
     {
-        string learner_id = "";
+        if (_accountStatus != AccountStatus._drafted)
+        {
+            throw new InvalidOperationException("Account is not drafted.");
+        }
+        ValidateInput(_email);
+        ValidateInput(_name);
+        _accountId = GenerateId();
+        _accountStatus = AccountStatus._registered;
+    }
+    private string GenerateId()
+    {
+        string learner_id;
         Random random = new Random();
         List<string> letters = new List<string> {"b","j","K","l","m","n","y","o","p","h","t","w","v","s","d","q","r","a","c","z","f","g"};
         List<int> int_indexes = new List<int>();
@@ -43,13 +54,29 @@ public class Account
     {
         return _name;
     }
-    public string GetLearningId()
+    public void SwitchId()
     {
-        return _learning_id;
+        _accountId = GenerateId();
     }
-    public string Display()
+    public string GetAccountId()
     {
-        return $">>> Name: {_name} | Email: {_email} | Learner Id: {_learning_id}";
+        if (_accountStatus != AccountStatus._registered)
+        {
+            throw new InvalidOperationException("Account is not registered.");
+        }
+        return _accountId;
+    } 
+    public virtual string Display()
+    {
+        return $">>> Name: {_name} | Email: {_email} | {_accountId}";
+    }
+    public void Delete()
+    {
+        if (_accountStatus == AccountStatus._deleted)
+        {
+            throw new InvalidOperationException("Already Deleted.");
+        }
+        _accountStatus = AccountStatus._deleted;
     }
     private string ValidateInput(string param)
     {
@@ -59,5 +86,10 @@ public class Account
         }
         return param;
     }
+    public AccountStatus GetAccountStatus()
+    {
+        return _accountStatus;
+    }
+    //
 }
 

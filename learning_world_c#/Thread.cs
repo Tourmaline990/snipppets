@@ -5,35 +5,92 @@ public class Thread
 {
     private Question _question;
     private List<Response> _responses = new List<Response>();
+    private ThreadVisibilityStatus _VisibilityStatus;
+    private ThreadActiveStatus _activeStatus;
 
     public Thread(Question question)
     {
-        _question = question;
+        _question = StartThread(question);
+        _activeStatus = ThreadActiveStatus._new;
+        _VisibilityStatus = ThreadVisibilityStatus._open;
+    }
+    private Question StartThread(Question question)
+    {
+        if (question.GetMessageStatus() != MessageStatus._sent)
+        {
+            throw new Exception("Failed! Unsent Message.");
+        }
+        return question;
     }
     public void AddResponse(Response response)
     {
-        if (_responses.Count < 1)
-        {   
-          _question.SetIsCompleted(true);
-        }
-        _responses.Add(response);
-        
-    }
-    public void Display()
-    {
-        if (_responses.Count > 0)
+        if (_activeStatus == ThreadActiveStatus._closed || _VisibilityStatus == ThreadVisibilityStatus._locked)
         {
-          Console.WriteLine($"{_question.Display()} \n \n {_question.IsCompleteDisplay()} ============ {_responses.Count}");
-          foreach (Response item in _responses)
-          {
-            Console.WriteLine(item.Display());
-           }  
+            throw new Exception("Upload failed. Thread is closed.");
+        }
+        if (response.GetMessageStatus() != MessageStatus._sent)
+        {
+            throw new Exception("Failed! unsent message");
+        }
+         _responses.Add(response);
+         _activeStatus = ThreadActiveStatus._ongoing;
+    }
+    private string ActiveStatusDisplay()
+    {
+        if (_activeStatus == ThreadActiveStatus._new)
+        {
+            return $"[New]";
+        }
+        else if (_activeStatus == ThreadActiveStatus._ongoing)
+        {
+            return $"[√]";
         }
         else
         {
-           Console.WriteLine($"{_question.Display()} \n {_question.IsCompleteDisplay()} =========== {_responses.Count}"); 
+            return $"[X]";
         }
-        
+    }
+    private string VisibilityDisplay()
+    {
+        if (_VisibilityStatus == ThreadVisibilityStatus._open)
+        {
+            return $"[========]";
+        }
+        else
+        {
+            return $"[===== LOCKED]";
+        }
+    }
+    public void Display()
+    {
+        if (_question.GetMessageStatus() == MessageStatus._deleted)
+        {
+            Console.WriteLine($"{_question.GetCaller()} deleted a question.");
+        }
+        else
+        {
+          Console.WriteLine(VisibilityDisplay());
+          Console.WriteLine($"{_question.Display()} \n \n {ActiveStatusDisplay()} ============ {_responses.Count}");
+          foreach (Response item in _responses)
+          {
+                if (item.GetMessageStatus() == MessageStatus._deleted)
+                {
+                    Console.WriteLine($"{item.GetCaller()} deleted a question.");
+                }
+                else
+                {
+                  Console.WriteLine(item.Display());
+                }
+           }   
+        }
+    }
+    public void SetVisibilityStatus(ThreadVisibilityStatus state)
+    {
+        _VisibilityStatus = state;
+    }
+    public void CloseThread()
+    {
+        _activeStatus = ThreadActiveStatus._closed;
     }
     public Question GetQuestion()
     {
@@ -46,27 +103,19 @@ public class Thread
             throw new ArgumentNullException(nameof(CallerName),"Empty Input");
         }
         CallerName = CallerName.ToLower();
-        List<Response> CallerNameResponse = new List<Response>();
-        
+        int num = 0;
+        Console.WriteLine("Search results: ");
         foreach (Response item in _responses)
         {
-            if (item.GetCaller() == CallerName)
+            if (item.GetCaller() == CallerName && item.GetMessageStatus() == MessageStatus._sent )
             {
-               CallerNameResponse.Add(item);
+               Console.WriteLine(item.Display());
+               num++;
             }
         }
-        if (CallerNameResponse.Count > 0)
-        {
-            Console.WriteLine("Search results: ");
-            foreach (Response item in CallerNameResponse)
-            {
-                Console.WriteLine(item.Display());
-            }
-        }
-        else
+        if(num == 0)
         {
             throw new ArgumentException(nameof(CallerName), "No search result matches query criteria");
         }
     }
-   ///
 }

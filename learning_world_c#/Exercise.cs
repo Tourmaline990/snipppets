@@ -1,24 +1,15 @@
 using System.Globalization;
+using System.IO.Pipes;
 using System.Runtime.CompilerServices;
 
-public class Exercise
+public class Exercise : LearningMaterial
 {
     private string _question;
     private List<ExerciseOption> _options = new List<ExerciseOption>();
-    private int _score;
-    private bool _isCompleted = false;
-    
+  
     public Exercise(string question)
     {
-        _question = ValidateInput(question);
-    }
-    private string ValidateInput(string param)
-    {
-        if (string.IsNullOrEmpty(param))
-        {      
-            throw new ArgumentNullException(nameof(param),"Empty Input.");
-        }
-        return param;
+        _question = question;
     }
     public int ExerciseOptionCount()
     {
@@ -26,61 +17,52 @@ public class Exercise
     }
     public void AddOption(ExerciseOption option)
     {
-        int num = 0;
-        List<bool> bools = new List<bool>();
-        if (_options.Count != 0)
-         {
-           foreach (ExerciseOption item in _options)
-           {
-             bools.Add(item.GetCorrectStatus());
-           } 
-           foreach (bool item in bools)
-            {
-             if (item == true)
-                {
-                    num += 1;
-                }
-            }
-            if (num > 1)
-            {
-                throw new ArgumentException("Only one option should be true");
-            }
-            _options.Add(option);
-         }
-         else
-         {
-           _options.Add(option);   
-         }
-        
+        if (GetStatus() != CourseMaterialStatus._draft)
+        {
+            throw new Exception("Failed. Unable to alter exercise, modify state.");
+        }
+         _options.Add(option); 
     }
-    public void Evaluate(int answer)
+    public bool Evaluate(int answer)
     {
-        if (answer < 1 || answer >= _options.Count)
+        if (answer < 0 || answer >= _options.Count)
         {
             throw new ArgumentOutOfRangeException(nameof(answer),"Answer out of range.");
         }
         if (_options[answer].GetCorrectStatus() == true)
         {
-           _score = 2; 
+           return true;
         }
-        else
+        return  false;
+    }
+    protected override void ValidatePublish()
+    {
+        if (_options.Count == 0)
         {
-            _score = 0;
+            throw new Exception("Cannot publish an exercise without options.");
         }
-        _isCompleted = true;
-    }
-    public int GetScore()
-    {
-        return _score;
-    }
-    public bool CorrectAnswerInOptions()
-    {
         ExerciseOption? foundCorrectAnswer = _options.Find(O => O.GetCorrectStatus() == true);
         if (foundCorrectAnswer == null)
         {
             throw new Exception("No correct answer for exercise yet.");
         }
-        return true;
+        if (string.IsNullOrEmpty(_question))
+        {      
+            throw new ArgumentNullException(nameof(_question),"Empty Input.");
+        }
+        int num = 0;
+        foreach (ExerciseOption item in _options)
+        {
+            if (item.GetCorrectStatus())
+            {
+                num ++;
+            }
+        }
+        if (num > 1)
+        {
+        throw new Exception($"Only one option should be valid,{num ++} found.");
+        }
+        
     }
     public void DisplayExercise()
     {
@@ -94,14 +76,16 @@ public class Exercise
     }
     public void RemoveOption(int optionIndex)
     {
-        if(optionIndex < 1 || optionIndex >= _options.Count){
+         if (GetStatus() != CourseMaterialStatus._draft)
+        {
+            throw new Exception("Failed. Unable to alter exercise, modify state.");
+
+        }
+        if(optionIndex < 0 || optionIndex >= _options.Count)
+        {
             throw new ArgumentOutOfRangeException(nameof(optionIndex),"Specified index out of range.");
         }
-        _options.RemoveAt(optionIndex);
-    }
-    public bool GetIsCompleted()
-    {
-        return _isCompleted;
-    }
-   ///
+         _options.RemoveAt(optionIndex);
+    }  
+    //
 }

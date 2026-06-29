@@ -9,5 +9,5 @@ public class Notification : Message
     {
         return $"From {GetCaller()} \n >>>> {GetText()}\n{GetDate()}";
     }
-///
+    //
 }
