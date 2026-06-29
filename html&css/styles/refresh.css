@@ -1,0 +1,124 @@
+:root
+{
+    --color1: darkslategray;
+    --color2: lightslategrey;
+    --color3: #fff;
+    --font: verdana;
+}
+header{
+    display: grid;
+    grid-template-columns: 34px auto 44px;
+    align-items: end;
+    padding: 0 6px 3px 6px;
+    border-bottom : 1px solid #bbb;
+    column-gap: 8px;
+    font-family: var(--font);
+}
+header img{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+header span{
+   text-decoration:end ;
+   font-size: 1.2rem;
+   padding-left: 8px;
+}
+.ham{
+    border: none;
+    background: 0;
+    font-size: 1.5rem;
+}
+.ham::before{
+  content:" \2630";
+}
+.ham.show::before{
+    content: "\00D7";
+}
+.navigation{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+}
+.navigation.show{
+    display: flex;
+    flex-direction: column;
+}
+.navigation a{
+    display: block;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: var(--color1);
+    color: #fff;
+    font-family: var(--font);
+}
+.navigation a:hover{
+    background-color: lightslategrey;
+}
+.navigation a.active,
+.navigation a:focus{
+    background-color: lightslategrey;
+}
+.forBtn{
+    position: fixed;
+    top: 0;
+    left: 0; 
+    background-color: var(--color1);
+    width: 250px;
+    height: 100%; 
+    transform: translateX(-100%);
+    transition: transform 1s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+.nav-menu{ 
+    padding: 0;
+    margin: 0; 
+}
+.forBtn.show{
+    transform: translateX(0);
+}
+.nav-menu a{
+    display: block;
+    color: var(--color3);
+    padding: 20px 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: var(--font);
+    text-align: center;
+}
+#closeBtn{
+    content: "\00D7";
+    width: 44px;
+    padding: 10px;
+    background: 0;
+    border: 0;
+    align-self: flex-end;
+}
+#closeBtn::before{
+    content: "\00D7";
+    color: white; 
+    font-size: 2.2rem;
+}
+.nav-menu a:hover{
+    text-decoration: double overline greenyellow;
+    color: greenyellow;
+}
+button{
+    cursor: pointer;
+}
+#closeBtn:focus{
+    color: greenyellow;
+}
+.overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 60%);
+    display: none;
+}
+.overlay.show{
+    display: block;
+}
