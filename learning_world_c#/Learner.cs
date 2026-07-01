@@ -37,6 +37,7 @@ public class Learner : Profile
             }
         }
         _learnerStatus = LearnerStatus._deleted;
+        
     }
     private string ValidateInput(string param)
     {

@@ -90,6 +90,10 @@ public class Account
     {
         return _accountStatus;
     }
+    public string GetEmail()
+    {
+        return _email;
+    }
     //
 }
 

@@ -72,6 +72,7 @@ public class InstructorAuditAccount : Account
             throw new Exception("Already revoked.");
         }
         _instructorStatus = InstructorStatus._revoked;
+        Delete();
     }
     public InstructorStatus GetInstructorStatus()
     {

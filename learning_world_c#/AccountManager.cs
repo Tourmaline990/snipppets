@@ -1,11 +1,17 @@
 using System.Globalization;
 using System.Net.Http.Headers;
+using System.Numerics;
 
 public class AccountManager
 {
     private List<Account> _accounts = new List<Account>();
     private List<Learner> _learners = new List<Learner>();
     private List<Instructor> _instructors = new List<Instructor>();
+    private readonly EventDispatcher _eventDispatcher;
+    public AccountManager(EventDispatcher dispatcher)
+    {
+        _eventDispatcher = dispatcher;
+    }
 
     public Profile Register(Account account)
     {
@@ -16,6 +22,13 @@ public class AccountManager
                 throw new InvalidOperationException("Cannot register an uncertified instructor.");
              }
         }
+        else
+        {
+            if (account.GetAccountStatus() != AccountStatus._drafted)
+            {
+                throw new InvalidOperationException("Failed! Account is not drafted.");
+            }
+        }
        account.Register();
        Account? acc = _accounts.Find(A => A.GetAccountId() == account.GetAccountId());
        while (acc != null)
@@ -24,9 +37,9 @@ public class AccountManager
           acc = _accounts.Find(A => A.GetAccountId() == account.GetAccountId());
        }
        _accounts.Add(account); 
-       return GetProfile(account.GetAccountId())!;
+       return CreateProfile(account.GetAccountId())!;
     }
-    private Profile? GetProfile(string accId)
+    private Profile? CreateProfile(string accId)
     {
         Account account = GetAccount(accId);
         switch (account)
@@ -42,27 +55,51 @@ public class AccountManager
         }
         return null;
     }
-    public void DisplayAccounts()
+    public List<Account> GetActiveAcccounts()
     {
-        int num = 1;
-        foreach (Account acc in _accounts)
+        return _accounts.FindAll(A => A.GetAccountStatus() == AccountStatus._registered);
+    }
+    public List<Account> GetAllDeletedAccount()
+    {
+        return _accounts.FindAll(A => A.GetAccountStatus() == AccountStatus._deleted);
+    }
+    public Instructor GetAvailableInstructor()
+    {
+        return _instructors.Find(I => I.GetInstructorActiveStatus() == InstructorActiveStatus._available)!;
+    }
+    public Learner? GetLearner(string accId)
+    {
+        accId = Utility.ValidateString(accId);
+        Type type = VerifyAccount(accId);
+        if (type != typeof(Learner))
         {
-            if (acc.GetAccountStatus() != AccountStatus._deleted)
-            {
-                if (acc is InstructorAuditAccount auditAccount)
-                {
-                    Console.WriteLine($"{num}. {auditAccount.Display()}");
-                }
-                else
-                {
-                    Console.WriteLine($"{num}. {acc.Display()}"); 
-                }
-                num ++;
-            }
+            throw new InvalidOperationException("Not a learner.");
         }
+        Profile profile =  GetAccountProfile(accId)!;
+        if (profile is Learner learner)
+        {
+            return learner;
+        }
+        return null;
+    }   
+    public Instructor? GetInstructor(string accId)
+    {
+        accId = Utility.ValidateString(accId);
+        Type type = VerifyAccount(accId);
+        if (type != typeof(Instructor))
+        {
+            throw new InvalidOperationException("Not an instructor.");
+        }
+        Profile profile =  GetAccountProfile(accId)!;
+        if (profile is Instructor instructor)
+        {
+            return instructor;
+        }
+        return null;
     }
     public void DeactivateAccount(string AccountId,ForumManager manager)
     {
+       AccountId = Utility.ValidateString(AccountId);
        Account account =  GetAccount(AccountId);
        Profile profile =  GetAccountProfile(AccountId)!;
         switch (profile)
@@ -72,25 +109,15 @@ public class AccountManager
                account.Delete();
                break;
             case Instructor instructor:
-                if (instructor.GetInstructorActiveStatus() == InstructorActiveStatus._active)
-                {
-                    Instructor? instructor1 = _instructors.Find(I => I.GetInstructorActiveStatus() == InstructorActiveStatus._available);
-                    if (instructor1 == null)
-                    {
-                        throw new InvalidOperationException("Instructor Deactivation failed! No available instructor to fill");
-                    }
-                    instructor1.AllocateSession(instructor.GetCourseSession(),manager.GetForum(instructor.GetCourseSession().GetSessionId()));
-                    instructor.GetCourseSession().SetInstructor(instructor);
-                }
-              instructor.Revoke();
                 switch (account)
                 {
                     case InstructorAuditAccount instructorAudit:
                       instructorAudit.Revoke();
-                      instructorAudit.Delete();
                       break;
                 }
-                break;
+               _eventDispatcher.Dispatch(new InstructorDeactivatedEvent(instructor.GetprofileId(),instructor.GetInstructorActiveStatus(),DateTime.UtcNow));
+                instructor.Revoke();
+                break; 
         }
     }
     public Type VerifyAccount(string accountId)
@@ -99,24 +126,13 @@ public class AccountManager
     }
     public Account GetAccount(string accId)
     {
-        if (string.IsNullOrEmpty(accId))
-        {
-            throw new ArgumentNullException(nameof(accId),"Learner id provided is empty.");
-        }
+        accId = Utility.ValidateString(accId);
         Account? account =  _accounts.Find(A => A.GetAccountId() == accId);
         if (account == null)
         {
             throw new NullReferenceException("Not found");
         }
         return account;
-    }
-    public void ViewDeletedAccounts()
-    {
-       List<Account>? accounts =  _accounts.FindAll(A => A.GetAccountStatus() == AccountStatus._deleted);
-       foreach(Account item in accounts)
-        {
-           Console.WriteLine($">>>> {item.Display()}"); 
-        }
     }
     public Profile? GetAccountProfile(string accountId)
     {
@@ -139,6 +155,5 @@ public class AccountManager
                 return learner;
         }
         return null;
-        
-    }
+    } 
 }
