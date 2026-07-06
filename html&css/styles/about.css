@@ -1,0 +1,306 @@
+:root{
+    --bg-color: #001f44;
+    --main-color: #363866;
+    --font-color: #f1f1f1;
+    --font: arial;
+    --btn-color: #00638b;
+    --page-bg: rgba(0, 0 ,0 ,90%);
+    --hover-color: #70facb;
+}
+body{
+  background-color: var(--page-bg);
+  color: var(--font-color);
+  /* The page uses the same font color and background */
+}
+header{
+    padding: 12px 8px 3px 3px;
+    border-bottom: 0.5px solid #aaa;
+    display: grid;
+    grid-template-columns: 24px auto 44px;
+    align-items: end;
+    column-gap: 8px;
+    /* well the padding is interesting, it did not break and was responsive  */
+    /* despite being pixels. i think it has to do with the grid template columns */
+    /* the text shrinks before it breaks: auto */
+    /* i used 3px as padding bottom; higher than that makes the items unequal (does not sit on the same line) */
+    /* below that leaves no space between the border bottom and content */
+    
+}
+header span{
+    font-size: 1.2rem;
+    font-family: var(--font);
+    /* font size: around 19px rel to html font size */
+}
+#ham-btn,
+#close-btn{
+  background: 0;
+  border: none;
+  color: var(--font-color);
+  font-size: 1.5rem;
+  font-family: var(--font);
+  /* clicking on this btn shifts the header layout (visible cause of the margin bottom) */
+}
+#ham-btn::before{
+    content: "\2630";
+    /* content doesnt work without before */
+}
+#ham-btn.active::before,
+#close-btn::before{
+    content: "\00d7";
+    font-size: 1.8rem;
+    /* font size here again because \00d7 looks small */
+}
+#overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255 ,255 ,10%);
+    display: none;
+}
+#overlay.active{
+    display: block;
+}
+#navigation{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    background: var(--bg-color);
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 1s ease-out;
+    display: flex;
+    flex-direction: column;
+    padding: 0.9rem 0.9rem 0 0;
+    /* parent container is body: height is relative to it. */
+    /* width for the nav is 250px: will be responsive on a screen size min 320px */
+    /* total width will is more tthan because of padding */
+    /* if padding and co are box models, then width and height are? */
+}
+#navigation.active{
+    transform: translateX(0);
+}
+#close-btn{
+    margin-left:auto;
+    padding: 8px;
+    color: var(--hover-color);
+    /* alligns to the end */
+    /* padding: to equal 44px for acessibility */
+}
+#ham-btn:focus{
+color: var(--hover-color);
+}
+nav ul{
+    list-style-type: none;
+   padding: 0;
+   margin: 0;
+   font-size: 1.2rem;
+   /* font size is not necessary here, but to implement em */
+}
+nav ul a{
+    display: block;
+    text-decoration: none;
+    color: var(--font-color);
+    font-family: var(--font);
+    font-size: 1em;
+    text-align: center;
+    margin: 0.5rem;
+    padding: 0.6rem;
+    /* relative to ul equals 1rem. */
+}
+nav ul a.active{
+    color: var(--hover-color);
+}
+nav ul a:hover{
+    text-decoration: overline double var(--hover-color);
+    color: var(--hover-color);
+}
+article{
+    max-width: 90vw;
+    padding-left: 8px;
+    font-size: 1.3rem;
+    margin-top: 8px;
+    font-family: var(--font);
+    font-weight: 400;
+    /* if the layout breaks, article did not contain its content properly */
+    /* hence, i made 90vw as a constraint for it */
+    /* all children will inherit from font size (em) */
+}
+article h1{
+   margin: 0;
+   font-size: 1em;
+   padding-top: 8px;
+   font-weight: inherit;
+   /* font size relative to parent */
+}
+article section h2{
+  font-size: 0.9em;
+  font-weight: inherit;
+}
+article section h3{
+    font-size: 0.8em;
+    font-weight: inherit;
+}
+.imagebox{
+    width: 70%;
+    border-radius: 10px;
+    height: 30vh;
+    border: 1px solid var(--hover-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    animation: animate 10s ease-in-out  infinite ;
+    /* ended  up relative to article, it seems. */
+    /* direct container has no width property */
+   
+}
+.imagebox.active{
+    animation: none;
+    /* this is a tricky one: despite body having an overflow hidden */
+    /* when nav and overlay is active, the animation shows through it */
+    /* looks as if its displayed right above it */
+    /* took a while but solved it. */
+}
+.imagebox p{
+ font-size: 0.9rem;
+ color: var(--page-bg);
+ /* rem here because imagebox has no font size property: image placeholder*/
+ /* so relative to root html itself */
+}
+article section h4{
+    font-weight: inherit;
+    font-size: 0.8em;
+}
+.list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
+    font-weight: inherit;
+    padding-left: 10px;
+}
+.list li::before{
+    content: "✓";
+    margin-right:5px ;
+}
+.card{
+    margin-bottom: 1rem;
+}
+footer{
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font);
+    font-size: 1.2rem;
+    align-items: center;
+    font-weight: 400;
+    border-top: 0.5px solid #aaa;
+}
+.location-info,
+.project-info{
+    font-size: 0.8em;
+    font-weight: inherit;
+    /* font size: relative to footer */
+}
+.location-info h5{
+    margin-bottom: -2px;
+    font-weight: inherit;
+    font-size: inherit;
+    text-align: center;
+}
+.project-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.project-info p{
+    margin-bottom: -1px;
+}
+.social{
+    display: flex;
+    column-gap: 8px;
+}
+.social a{
+    border: 1px solid var(--hover-color);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px ;
+    /* px here, for precision */
+}
+.social a:hover{
+    border-radius: 12px;
+    border: 1px  solid var(--btn-color);
+}
+body.active{
+    overflow: hidden;
+}
+ @keyframes animate {
+    0%{
+        background-color: var(--bg-color);
+        opacity: 0.7;
+    }
+    50%{
+        background-color: var(--hover-color);
+        opacity: 0.5;
+    }
+    100%{
+        background-color: var(--btn-color);
+        opacity: 1;
+    }
+ }
+ @media screen  and (min-width: 38rem){
+    article{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    article h1{
+        grid-column: 1/3;
+    }
+    article section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #ham-btn{
+        display: none;
+    }
+    #navigation{
+        display: block;
+        position: static;
+        transform: translateX(0);
+        border-bottom: 1px solid #aaa;
+        width: 100%;
+        padding: 0;
+        transition: none;
+        /* undoing mobile rule */
+        /* i assume 100% will be its default, its parent container is body  */
+    }
+    #close-btn{
+        display: none;
+    }
+    #navigation ul{
+        display: flex;
+        align-items: center;  
+    }
+    #navigation ul li{
+        border-left: 1px solid #aaa;
+        text-align: center;
+        flex: 1;
+    }
+    #navigation .n{
+        border: none;
+    }
+    #navigation ul li:hover{
+      background-color: var(--hover-color);
+    }
+    #navigation ul a:hover{
+        color: black;
+    }
+    footer{
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+ }

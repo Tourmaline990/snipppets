@@ -28,7 +28,7 @@ document.querySelector(".btn").addEventListener("click",(event)=>{
 
 // validate coupon: extracts text from input, gets previously displayed total, verify coupon, 
 // subtracts discount, recompute total and display.
-function validateCoupon(coupons,total,DisplayToUser,CouponInput) {
+function validateCoupon(coupons,total,DisplayToUser,CouponInput){
     if(CouponInput.value.trim !== "" && coupons.every(el=> el !== null && typeof el === "object")){
       let coupon_code = CouponInput.value.toLowerCase()
       try {
