@@ -2,7 +2,6 @@ public class Instructor : Profile
 {
     private CourseSession _courseSession = null!;
     private Forum _forum = null!;
-   
     private InstructorActiveStatus _instructorActiveStatus;
     public Instructor(string name,string instructorId): base(name,instructorId)
     {

@@ -47,10 +47,12 @@ public class AccountManager
             case InstructorAuditAccount auditAccount:
               Instructor instructor =  new Instructor(auditAccount.GetName(),auditAccount.GetAccountId());
               _instructors.Add(instructor);
+              _eventDispatcher.Dispatch(new InstructorRegisteredEvent(auditAccount.GetAccountId(),DateTime.UtcNow));
               return instructor;
             case Account acc:
               Learner learner =  new Learner(acc.GetAccountId(),acc.GetName());
               _learners.Add(learner);
+              _eventDispatcher.Dispatch(new LearnerRegisteredEvent(acc.GetAccountId(),DateTime.UtcNow));
               return learner;
         }
         return null;
@@ -63,9 +65,9 @@ public class AccountManager
     {
         return _accounts.FindAll(A => A.GetAccountStatus() == AccountStatus._deleted);
     }
-    public Instructor GetAvailableInstructor()
+    public Instructor? GetAvailableInstructor()
     {
-        return _instructors.Find(I => I.GetInstructorActiveStatus() == InstructorActiveStatus._available)!;
+        return _instructors.Find(I => I.GetInstructorActiveStatus() == InstructorActiveStatus._available);
     }
     public Learner? GetLearner(string accId)
     {
@@ -97,7 +99,7 @@ public class AccountManager
         }
         return null;
     }
-    public void DeactivateAccount(string AccountId,ForumManager manager)
+    public void DeactivateAccount(string AccountId)
     {
        AccountId = Utility.ValidateString(AccountId);
        Account account =  GetAccount(AccountId);
@@ -105,9 +107,11 @@ public class AccountManager
         switch (profile)
         {
             case Learner learner:
-               learner.DeleteAccount(manager);
                account.Delete();
+               _eventDispatcher.Dispatch(new LearnerDeactivatedEvent(learner.GetprofileId(),DateTime.UtcNow,learner.GetAllActiveEnrollments()));
+               learner.DeleteAccount();
                break;
+
             case Instructor instructor:
                 switch (account)
                 {

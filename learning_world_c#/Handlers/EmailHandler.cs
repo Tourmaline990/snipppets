@@ -5,10 +5,23 @@ public class EmailHandler
     {
        _accountManager = accountManager; 
     }
-    public void Handle(InstructorDeactivatedEvent deactivatedEvent)
+    public void Handle(Event evt)
     {
-        Account account = _accountManager.GetAccount(deactivatedEvent.GetprofileId());
-        string email = account.GetEmail();
-        // user should be mailed.
+        switch (evt)
+        {
+            case InstructorDeactivatedEvent instructorDeactivated:
+               string email = _accountManager.GetAccount(instructorDeactivated.GetprofileId()).GetEmail();
+               // send email
+               break;
+            case LearnerDeactivatedEvent learnerDeactivated:
+               email = _accountManager.GetAccount(learnerDeactivated.GetLearnerId()).GetEmail();
+              break;
+            case LearnerRegisteredEvent learnerRegistered:
+              email = _accountManager.GetAccount(learnerRegistered.GetId()).GetEmail();
+              break; 
+            case InstructorRegisteredEvent instructorRegistered:
+              email = _accountManager.GetAccount(instructorRegistered.GetId()).GetEmail();
+              break;
+        }
     }
-}
+} 

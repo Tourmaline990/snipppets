@@ -1,0 +1,231 @@
+:root{
+    --darker-main-color: #ffbf00;
+    --text: black;
+    --styled-font: helvetica;
+    --font: arial;
+    --secondary-color: #fff;
+}
+
+body{
+    font-family: var(--font);
+}
+
+           /* Header and its content */
+header{
+    display: flex;
+    box-shadow: 3px 4px 9px 2px#eee;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--secondary-color);
+}
+         /* menu button */
+.ham-btn{
+    margin-left: auto;
+    background: 0;
+    border: 0;
+    font-size: 2rem;
+    padding: 8px;
+}
+.ham-btn.active::before{
+    content: '\00d7';
+}
+.ham-btn::before{
+    content: "\2630";
+}
+
+/* header logo switch */
+
+.brand-logo.switch{
+   transform: translateY(-100%);
+}
+header img.switch{
+    display: block;
+    margin-left: 8px;
+}
+
+         /* brand logo and children */
+.brand-logo{
+    background: var(--darker-main-color);
+    width: 90px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 40px;
+    transition: transform 1s ease-out;
+}
+
+.bold{
+  margin-top: -5px;
+  font-weight: 900;
+  border-bottom: 1px solid var(--text);
+  font-size: 1.5em;
+  font-style: italic;
+}
+.next{
+    letter-spacing: 1px;
+    font-size: 1em;
+}
+.final{
+    font-size: 0.7em;
+}
+div p{
+  margin-bottom: -5px;
+}
+
+  /* navigation */
+.nav{
+    position: fixed;
+    top: 70px;
+    right: 0;
+    width: 250px;
+    background-color: var(--secondary-color);
+    border-top: 5px solid var(--darker-main-color);
+    border-bottom: 5px solid var(--darker-main-color);
+    transform: translateX(100%);
+    font-size: 1rem;
+    font-family: var(--font);
+    transition: transform 0.9s ease-out;
+    z-index: 1000;
+    /* z index here: sticky header displays on the nav */
+    /* corrected */
+    /* z-index importance shines mostly wheen elements are not laid,or placed in order  */
+}
+.nav.active{
+    animation: forBorder 3s ease-in-out infinite;
+    display: block;
+    transform: translateX(0); 
+}
+.nav ul{
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+.nav ul li{
+    padding: 16px 6px;
+}
+.nav ul a{
+    text-decoration: none;
+    font-size: 1.2em;
+    font-family: inherit;
+    color: var(--text);
+}
+.nav ul a.active::after{
+   content: '\🎯';
+}
+
+/* element state */
+.nav ul a:hover,
+.ham-btn:hover{
+   cursor: pointer;
+   color: var(--darker-main-color);
+   text-decoration:overline  var(--darker-main-color) 2px;
+}
+.ham-btn:hover{
+   text-decoration: none;
+}
+.ham-btn:focus{
+    color: var(--darker-main-color);
+}
+
+  /* main */
+main{
+    padding-top: 100px;
+}
+section{
+    padding: 10px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-family: var(--font);
+    font-weight: 400;
+}
+section h1{
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: inherit;
+    position: sticky;
+    top: 60px;
+    background-color: var(--text);
+    color: var(--secondary-color);
+    padding: 10px;
+    text-align: center;
+    z-index: 10;
+}
+section p{
+    font-size: 1.2em;
+}
+
+/* floating contact btn */
+.contact{
+    position: fixed;
+    right: 10px;
+    bottom: 25px;
+    z-index: 20;
+    /* z-idex here so the page contents doesnt stay above the button designated spot */
+    /* button parent */
+}
+.contactBtn{
+    width: 50px;
+    height: 50px;
+    padding: 1.5rem;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 3px 4px 5px 1px black ;
+    position: relative;
+    z-index: 10;
+}
+.badge{
+    background: red;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    animation: forBadge 2s ease-in-out infinite;
+}
+@keyframes forBorder {
+    0%{
+        border-color:slateblue;
+    }
+    15%{
+        border-color: forestgreen;
+    }
+    30%{
+        border-color: crimson;
+    }
+    45%{
+       border-color:black ; 
+    }
+    60%{
+        border-color:deeppink ; 
+    }
+    75%{
+        border-color: darkolivegreen; 
+    }
+    100%{
+        border-color: darkcyan; 
+    }
+}
+@keyframes forBadge{
+    0%{
+       transform: scale(0.5) ;
+    }
+    50%{
+        transform: scale(1);
+    }
+    100%{
+        transform: scale(1.2);
+    }
+
+}

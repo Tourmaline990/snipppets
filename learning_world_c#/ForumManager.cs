@@ -2,27 +2,18 @@ public class ForumManager
 {
     private List<Forum> _availableForums = new List<Forum>();
 
-    public ForumMember? AddEnrolled(string LearnerId,string SessionId,AccountManager manager)
+    public ForumMember? AddMember(string memberId,string SessionId,AccountManager manager)
     {
-        Profile profile = manager.GetAccountProfile(LearnerId)!;
-        Learner learner;
-        if (profile is Learner learner1)
-        {
-            learner = learner1;
-        }
-        else
-        {
-            throw new InvalidOperationException("Failed!");
-        }
+        manager.VerifyAccount(memberId);
         ForumMember forumMember;
         Forum forum =  GetForum(SessionId);
-        if (forum.VerifyLearner(LearnerId))
+        if (forum.VerifyLearner(memberId))
         {
             throw  new InvalidOperationException("Already in forum");
         }
-        forumMember = new ForumMember(LearnerId,forum);
+        forumMember = new ForumMember(memberId,forum);
         forum.AddMember(forumMember); 
-        learner.AddNotification(new Notification("Enrollment Team",$"You have been added to {forum.GetForumName()}.",DateTime.UtcNow));
+        manager.GetAccountProfile(memberId)!.AddNotification(new Notification("Enrollment Team",$"You have been added to {forum.GetForumName()}.",DateTime.UtcNow));
         return forumMember;
     }
     public void AssignSessionToForum(string sessionId,CourseCatalog catalog)

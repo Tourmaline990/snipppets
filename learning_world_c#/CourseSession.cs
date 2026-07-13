@@ -165,5 +165,10 @@ public class CourseSession : Session
         }
         throw new InvalidOperationException("CourseSession is not launched or not active");
     }
+    public void CancelEnrollment(string enrollmentId)
+    {
+        enrollmentId = Utility.ValidateString(enrollmentId);
+        GetEnrolledById(enrollmentId)!.Delete();
+    }
     //
 }

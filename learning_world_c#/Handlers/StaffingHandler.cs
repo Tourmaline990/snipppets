@@ -6,8 +6,16 @@ public class StaffingHandler
     {
         _staffManagement = management;
     } 
-    public void Handle(InstructorDeactivatedEvent deactivatedEvent)
+    public void Handle(Event evt)
     {
-        _staffManagement.ReplaceInstructor(deactivatedEvent.GetprofileId());
+        switch (evt)
+        {
+            case InstructorDeactivatedEvent instructorDeactivated:
+                _staffManagement.ReplaceInstructor(instructorDeactivated.GetprofileId());
+                break;
+            case InstructorRegisteredEvent instructorRegistered:
+               _staffManagement.AddNotification(new Notification("Registration team",$"New Instructor Alert : ID - {instructorRegistered.GetId()} time: {instructorRegistered.GetEventDate()}",DateTime.UtcNow));
+               break;
+        }
     }
 }

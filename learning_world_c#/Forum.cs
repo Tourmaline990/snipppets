@@ -164,6 +164,11 @@ public class Forum
             throw new Exception($"No questions from caller {caller}");
         }
     }
+    public void RemoveMember(string memberId)
+    {
+        memberId = Utility.ValidateString(memberId);
+        GetMember(memberId).Remove();
+    }
     public void GetResponsesByCaller(string Caller)
     {
         if (_forumInitialStatus == ForumInitialStatus._drafed)

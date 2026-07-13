@@ -131,7 +131,7 @@ public class EnrollmentService
     public ForumMember? AssignForum()
     {
         CourseSession courseSession = _courseCatalog.GetCourseSession(_courseSessionId);
-        ForumMember? member = _forumManager.AddEnrolled(_learnerId,_courseSessionId,_accountManager);
+        ForumMember? member = _forumManager.AddMember(_learnerId,_courseSessionId,_accountManager);
         return member;
     }
 

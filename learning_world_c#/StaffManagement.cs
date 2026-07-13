@@ -2,6 +2,7 @@ public class StaffManagement
 {
     private readonly AccountManager _accountManager;
     private readonly ForumManager _forumManager;
+    private List<Notification> _inbox = new List<Notification>();
     public StaffManagement(AccountManager manager,ForumManager forumManager)
     {
         _accountManager = manager;
@@ -33,5 +34,9 @@ public class StaffManagement
         CourseSession courseSession = instructor.GetCourseSession();
         Instructor replacement = _accountManager.GetAvailableInstructor();
         replacement.AllocateSession(courseSession,_forumManager.GetForum(sessionId));
+    }
+    public void AddNotification(Notification notification)
+    {
+        _inbox.Add(notification);
     }
 }

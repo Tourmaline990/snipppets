@@ -68,13 +68,13 @@ public class Enrollment
         }
     }
     
-    public void Delete(ForumManager manager)
+    public void Delete()
     {
         if (_enrollmentStatus == EnrollmentStatus._deleted)
         {
             throw new InvalidOperationException("Already deleted");
         }
-        SyncForumData(manager);
+        // SyncForumData(manager);
         _enrollmentStatus = EnrollmentStatus._deleted;
     }
     public void Drop(AccountManager accountManager, ReasonToDropLearner reasonToDrop,ForumManager manager)

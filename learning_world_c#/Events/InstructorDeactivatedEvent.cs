@@ -1,14 +1,11 @@
-public class InstructorDeactivatedEvent
+public class InstructorDeactivatedEvent : Event
 {
     private string _profileId;
     private InstructorActiveStatus _status;
-    private DateTime _dateTime;
-
-    public InstructorDeactivatedEvent(string profileId,InstructorActiveStatus activeStatus,DateTime dateTime)
+    public InstructorDeactivatedEvent(string profileId,InstructorActiveStatus activeStatus,DateTime dateTime): base(dateTime)
     {
         _profileId = Utility.ValidateString(profileId);
         _status = activeStatus;
-        _dateTime = dateTime;
     }
     public string GetprofileId()
     {
@@ -18,8 +15,5 @@ public class InstructorDeactivatedEvent
     {
         return _status;
     }
-    public DateTime GetEventDate()
-    {
-        return _dateTime;
-    }
+    
 }

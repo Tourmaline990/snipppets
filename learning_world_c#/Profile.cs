@@ -2,6 +2,7 @@ public class Profile
 {
     private string _name;
     private string _accountId;
+    private List<Notification> _inbox = new List<Notification>();
 
     public Profile(string name, string id)
     {
@@ -23,5 +24,9 @@ public class Profile
     public string GetProfileName()
     {
         return _name;
+    }
+    public void AddNotification(Notification notification)
+    {
+        _inbox.Add(notification);
     }
 }
