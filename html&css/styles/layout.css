@@ -1,0 +1,118 @@
+:root{
+    --color--1: #121c2b;
+    --color--2: #d09ea9;
+    --color--3: crimson;
+    --text--color: #fff;
+    --font: Arial;
+    --border--color: #aaa;
+}
+body{
+  font-family: var(--font);  
+  margin: 0;
+}
+@media screen and (min-width: 38rem) {
+    header{
+        background-color: var(--color--1);
+        color: var(--text--color);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0.7rem;
+        font-size: 1.2rem;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        box-sizing: border-box;
+        /* border box here cause i noticed there was an horizontal*/
+        /* scroll, width + padding */
+    }
+    .navigation{
+        display: flex;
+        justify-content: space-around;
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        align-items: flex-end;
+        gap: 1rem;
+           li{
+              a{
+                text-decoration: none;
+                font-size: 0.9em; 
+                color: inherit;
+                /* its nearest parent with a font-size and color property is the header */
+               }
+               a:hover{
+                    color: var(--color--2);
+                  }
+               a.active{
+                    color: var(--color--2);
+               }
+          }
+          /* trying out nested css */
+    }
+    article{
+             display: grid;
+             grid-template-columns: 280px 1fr;
+             padding-left: 8px;
+             font-size: 1.2rem;
+             h1{
+               grid-column: 1/3;
+               margin: 0;
+               font-size: 1em;
+               font-weight: 500;
+             }
+             .sidebar{
+              grid-column: 1;
+              display: flex;
+              flex-direction: column;
+              padding: 8px;
+                .avatar{
+                  border-bottom: 1px solid var(--border--color);
+                   &.avatar img{
+                     display: block;
+                     margin: 5px auto;
+                     border-radius: 50%;
+                   }
+                   &.avatar p{
+                     margin: 0;
+                     text-align: center;
+                     font-size: 1em;
+                   }
+                }
+                .socials{
+                   display: flex;
+                   flex-direction: column;
+                   border-bottom: 1px solid var(--border--color);
+                   padding: 8px;
+                   gap: 8px;
+                   & a{
+                      font-size: 0.9em;
+                      color: var(--color--1);
+                   }
+                }
+                .signOut{
+                  display: block;
+                  font-size: 0.9em;
+                  padding: 8px;
+                  color: var(--color--1);
+                  & a{
+                     color: var(--color--1);
+                       & img{
+                         display: inline-block;
+                         margin-right: 5px;
+                       }
+                  }
+                }
+             }
+             .mainContent{
+              grid-column: 2/3;
+             }
+             .floatingBtn{
+              position: fixed;
+              display: none;
+             }
+          }
+    main{
+        padding-top: 50px;
+    }
+}
