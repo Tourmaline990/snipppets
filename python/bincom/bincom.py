@@ -104,23 +104,23 @@ else:
    print("No color has exactly the median frequency")
 
 # Save the colours and their frequencies in postgresql database
-# db_url = os.getenv("dburl")
-# try:
-#     with psycopg.connect(db_url) as connection:
-#         with connection.cursor() as cursor:
-#            create = 'CREATE TABLE bincom_colors(color_id SERIAL PRIMARY KEY,color VARCHAR(50) NOT NULL,' \
-#            'frequency INT NOT NULL)'
-#            insert_query = 'INSERT INTO bincom_colors (color, frequency) VALUES(%s,%s)'
+db_url = os.getenv("dburl")
+try:
+    with psycopg.connect(db_url) as connection:
+        with connection.cursor() as cursor:
+           create = 'CREATE TABLE bincom_colors(color_id SERIAL PRIMARY KEY,color VARCHAR(50) NOT NULL,' \
+           'frequency INT NOT NULL)'
+           insert_query = 'INSERT INTO bincom_colors (color, frequency) VALUES(%s,%s)'
 
-#            cursor.execute(create)
-#            for occ in COLOR_OCCURRENCE:
-#                for key, value in occ.items():
-#                    cursor.execute(insert_query,(key,value))
-#            print("done")
+           cursor.execute(create)
+           for occ in COLOR_OCCURRENCE:
+               for key, value in occ.items():
+                   cursor.execute(insert_query,(key,value))
+           print("done")
 
         
-# except Exception as e:
-#      print(e)
+except Exception as e:
+     print(e)
 
 
 # Write a program that generates random 4 digits number of 0s and 1s and convert the generated number to base 10.
