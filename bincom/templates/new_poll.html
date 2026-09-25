@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Poll</title>
+</head>
+<body>
+    <header></header>
+    <main>
+        <h1>Create Polling Unit Results</h1>
+        <form action="/success" method="post">
+            <fieldset>
+                <legend>Personal Information</legend>
+                  <label for="username">Name: </label>
+                  <input type="text" name="username" id="username" required>
+                  <label for="ip">Ip Address: </label>
+                  <input type="text" name="ip" id="ip" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Polling Unit Information</legend>
+                <label for="p_unit_id">Polling Unit Id:</label>
+                <input type="text" name="p_unit_id" id="p_unit_id" required>
+                <label for="lga_id">LGA:</label>
+                <select name="lga_id" id="lga_id" required>
+                   <option value="" selected >--Select LGA--</option>
+                    {%for row in lga%}
+                     <option value="{{row.lga_id}}">{{row.lga_name}}</option>
+                     {%endfor%}
+                </select>
+                <label for="ward">Ward</label>
+                <select name="ward" id="ward" required>
+                    <option value="" selected >--Select Ward--</option>
+                    {%for row in ward%}
+                    <option value="{{row.uniqueid}}">{{row.ward_name}}</option>
+                    {%endfor%}
+                </select>
+            </fieldset>
+            <fieldset>
+                <legend>Party Results</legend>
+                 {%for row in party%}
+                 <label for="{{row.partyname}}" >{{row.partyname}} Result:</label>
+                 <input type="text" name="{{row.partyname}}" required >
+                 {%endfor%}
+            </fieldset>
+            
+            <button type="submit">Submit Result</button>
+        </form>
+    </main>
+    <footer></footer>
+</body>
+</html>

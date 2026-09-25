@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header></header>
+    <main>
+        <form action="/lga_result" method="post">
+          <label for="lga" >Choose a LGA: </label>
+           <select name="lga" id="lga">
+              <option value="" selected>--please select an option</option>
+                  {%for row in lga%}
+                     <option value="{{row.lga_id}}">{{row.lga_name}}</option>
+                   {%endfor%}
+          </select>
+
+          <button type="submit">View Result</button>
+     </form>
+    </main>
+    <footer></footer>
+</body>
+</html>
