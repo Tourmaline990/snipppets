@@ -1,0 +1,70 @@
+
+main{
+    background-color: #0D0D0D;
+    padding: 8px;
+}
+section{
+    background-color: #1A1A1A;
+    margin: 0 auto;
+    width: 350px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+img{
+    border-radius: 50%;
+
+}
+div{
+    padding: 8px;
+    /* background-color: #262626; */
+}
+.profile{
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h2{
+    font-size: .95rem;
+    color: #fff;
+    font-family: verdana, Geneva, Tahoma, sans-serif;
+}
+.country{
+    font-size: .75rem;
+    color: forestgreen;
+    padding: 0;
+    margin: 0;
+    font-family: verdana, Geneva, Tahoma, sans-serif;
+}
+.p{
+    color: #fff;
+    text-align: center;
+    font-size: .75rem;
+    font-family: verdana, Geneva, Tahoma, sans-serif;
+}
+.socials{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+}
+.socials p{
+    background-color: #262626;
+    padding: 16px;
+    width: 100%;
+    border-radius: 5px;
+    text-align: center;
+    color: #eee;
+    font-family: tahoma;
+    font-family: .95rem;
+    box-shadow: 1px -4px 5px rgba(0, 0, 0, 0.5);
+}
+.socials p:hover{
+    color: forestgreen;
+    box-shadow: 1px 4px 5px rgba(0, 0, 0, 0.5);
+}
+
+
+
